@@ -1,0 +1,64 @@
+﻿<Window
+    x:Class="ModManager.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ModManager.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:ModManager.ViewModels"
+    Title="ModManager-v1.0.0-SHANPOST"
+    Width="1300"
+    Height="800"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d" Icon="/Views/icon.PNG">
+    <materialDesign:DialogHost
+        VerticalAlignment="Center"
+        CloseOnClickAway="False"
+        DialogTheme="Inherit"
+        Identifier="Root"
+        OverlayBackground="{DynamicResource PrimaryHueDarkBrush}"
+        x:Name="Dialoghost"
+        Placement="Center">
+        <Grid
+            Width="1280"
+            Height="768"
+            HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <ListBox
+                x:Name="MenuBar"
+                Margin="0,16,0,16"
+                AutomationProperties.Name="DemoPagesListBox"
+                ItemsSource="{Binding MenuBars}"
+                Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="SelectionChanged">
+                        <behaviors:InvokeCommandAction Command="{Binding NavigateCommand}" CommandParameter="{Binding ElementName=MenuBar, Path=SelectedItem}" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+                <ListBox.Resources>
+                    <Style BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" TargetType="ScrollBar" />
+                </ListBox.Resources>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="domain:DemoItem">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Margin="15,9" Kind="{Binding Icon}" />
+                            <TextBlock
+                                Margin="24,5,5,5"
+                                FontFamily="Microsoft YaHei"
+                                FontSize="16"
+                                Text="{Binding Name}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ContentControl Grid.Column="1" prism:RegionManager.RegionName="MainViewRegion" />
+        </Grid>
+    </materialDesign:DialogHost>
+</Window>
