@@ -14,4 +14,4 @@
 
 
 ## 分发许可证
-GNU LESSER GENERAL PUBLIC LICENSE Version 3
+GNU General Public License v3.0
