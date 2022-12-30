@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ModManager.Common
+namespace ModManager.Common.Structs
 {
     public class Manifest
     {

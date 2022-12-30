@@ -1,5 +1,7 @@
-﻿using ModManager.Common;
+﻿using ImTools;
+using ModManager.Common;
 using ModManager.Common.Events;
+using ModManager.Common.Structs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Prism.Events;
@@ -21,15 +23,15 @@ namespace ModManager.Utils
 {
     public class FileUtil
     {
-        public static ObservableCollection<SourceItem>? ImportModJson(string path) // 导入Json文件
+        public static ObservableCollection<ModItem>? ImportModJson(string path) // 导入Json文件
         {
             try
             {
                 StreamReader streamReader = new StreamReader(path);
                 string jsonstr = streamReader.ReadToEnd();
                 streamReader.Close();
-                var items = JsonConvert.DeserializeObject<ObservableCollection<SourceItem>>(jsonstr);
-                ObservableCollection<SourceItem> result = new ObservableCollection<SourceItem>();
+                var items = JsonConvert.DeserializeObject<ObservableCollection<ModItem>>(jsonstr);
+                ObservableCollection<ModItem> result = new ObservableCollection<ModItem>();
                 foreach(var item in items)
                 {
                     foreach(var version in item.VersionList)
@@ -54,7 +56,7 @@ namespace ModManager.Utils
                 return null;
             }
         }
-        public static void ExportModJson(ObservableCollection<SourceItem> sourceItems, string path) // 导出Json文件
+        public static void ExportModJson(ObservableCollection<ModItem> sourceItems, string path) // 导出Json文件
         {
             try
             {
@@ -71,7 +73,7 @@ namespace ModManager.Utils
                 MessageBox.Show("导出失败\n" + e.Message);
             }
         }
-        public static async void ExportAsZipFile(ObservableCollection<SourceItem> sourceItems, string MCVer, string LoaderVer, string Name, string Ver, string Author, IDialogHostService dialogHostService, IEventAggregator aggregator) // 导出为ZIP压缩文件
+        public static async void ExportAsZipFile(ObservableCollection<ModItem> sourceItems, string MCVer, string LoaderVer, string Name, string Ver, string Author, IDialogHostService dialogHostService, IEventAggregator aggregator) // 导出为ZIP压缩文件
         {
             aggregator.GetEvent<LoadingEvent>().Publish(true);
             DirectoryInfo TmpDir = new DirectoryInfo(System.Environment.CurrentDirectory + "/tmp");
@@ -86,21 +88,21 @@ namespace ModManager.Utils
             var ResPackDir = TmpDir.CreateSubdirectory("overrides/resourcepacks");
             var ShaderDir = TmpDir.CreateSubdirectory("overrides/shaderpacks");
             Manifest manifest = new(MCVer, LoaderVer, Name, Ver, Author);
-            List<string> fails = new List<string>();
+            List<string> fails = new();
             if (sourceItems == null || sourceItems.Count == 0)
             {
                 aggregator.GetEvent<LoadingEvent>().Publish(false);
                 aggregator.GetEvent<MessageEvent>().Publish("版本列表为空！");
                 return;
             }
-            foreach (SourceItem item in sourceItems)
+            foreach (ModItem item in sourceItems)
             {
                 switch (item.Type)
                 {
                     case "Curseforge":
                         {
                             if (item.CurseforgeID == null || item.Version == null || item.Version.fileId == 0) { fails.Add(item.Name); break; }
-                            manifest.files.Add(new Common.File() { fileID = item.Version.fileId, projectID = int.Parse(item.CurseforgeID), required = true });
+                            manifest.files.Add(new Common.Structs.File() { fileID = item.Version.fileId, projectID = int.Parse(item.CurseforgeID), required = true });
                             break;
                         }
                     case "Github":
@@ -145,10 +147,10 @@ namespace ModManager.Utils
                 if (result.Result == ButtonResult.Cancel) { return; }
             }
             var manifest_str = JsonConvert.SerializeObject(manifest);
-            System.IO.File.WriteAllText(TmpDir.FullName + "/manifest.json", manifest_str);
+            System.IO.File.WriteAllText(TmpDir.FullName + "/manifest.json", manifest_str,Encoding.UTF8);
             FileInfo OutputFile = new FileInfo(System.Environment.CurrentDirectory + "/" + Name + ".zip");
             if (OutputFile.Exists) { OutputFile.Delete(); }
-            ZipFile.CreateFromDirectory(TmpDir.FullName, OutputFile.FullName, CompressionLevel.Optimal, false);
+            ZipFile.CreateFromDirectory(TmpDir.FullName, OutputFile.FullName, CompressionLevel.Optimal, false,Encoding.UTF8);
             aggregator.GetEvent<LoadingEvent>().Publish(false);
             aggregator.GetEvent<MessageEvent>().Publish("已经导出到同目录下" + OutputFile.Name);
             TmpDir.Delete(true);
@@ -159,12 +161,12 @@ namespace ModManager.Utils
             process.Start();
         }
 
-        public static async Task<ObservableCollection<SourceItem>> LoadFromModsFolderFile(string FolderPath, string MCVer) //从Mods文件夹加载
+        public static async Task<ObservableCollection<ModItem>> LoadFromModsFolderFile(string FolderPath, string MCVer) //从Mods文件夹加载
         {
             return await Task.Run(async () =>
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(FolderPath);
-                ObservableCollection<SourceItem> sourceItems = new ObservableCollection<SourceItem>();
+                ObservableCollection<ModItem> sourceItems = new ObservableCollection<ModItem>();
                 FileInfo[] files = directoryInfo.GetFiles("*.jar");
                 List<uint> fingerprints = new();
                 foreach (FileInfo file in files)
@@ -209,7 +211,7 @@ namespace ModManager.Utils
                                 var ret = ParseModJson(fabricmodjson, file);
                                 if (ret == null)
                                 {
-                                    var item = new SourceItem() { URL = file.FullName, Type = "本地Mod文件", Comment = fabricmodjson["name"].Value<string>(), Name = fabricmodjson["name"].Value<string>(), Version = new FileItem() { filename = file.Name } };
+                                    var item = new ModItem() { URL = file.FullName, Type = "本地Mod文件", Comment = fabricmodjson["name"].Value<string>(), Name = fabricmodjson["name"].Value<string>(), Version = new FileItem() { filename = file.Name } };
                                     item.VersionList.Add(item.Version);
                                     sourceItems.Add(item);
                                 }
@@ -224,10 +226,10 @@ namespace ModManager.Utils
                 return await GetDataFromAPI(sourceItems, MCVer);
             });
         }
-        public static ObservableCollection<SourceItem> LoadFromTxtFile(string FilePath) //从txt文件加载
+        public static ObservableCollection<ModItem> LoadFromTxtFile(string FilePath) //从txt文件加载
         {
             StreamReader streamReader = new StreamReader(FilePath);
-            ObservableCollection<SourceItem> sourceItems = new ObservableCollection<SourceItem>();
+            ObservableCollection<ModItem> sourceItems = new ObservableCollection<ModItem>();
             while (!streamReader.EndOfStream)
             {
                 string line = streamReader.ReadLine();

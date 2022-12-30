@@ -2,6 +2,7 @@
 using Microsoft.WindowsAPICodePack.Dialogs;
 using ModManager.Common;
 using ModManager.Common.Events;
+using ModManager.Common.Structs;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -61,7 +62,7 @@ namespace ModManager.ViewModels.Dialogs
             if (Type == null || URL == null)
                 return;
             FileInfo fileInfo = new FileInfo(URL);
-            SourceItem sourceItem = new SourceItem() { Type = Type, URL = URL, Comment = fileInfo.Name };
+            ModItem sourceItem = new ModItem() { Type = Type, URL = URL, Comment = fileInfo.Name };
             sourceItem.VersionList.Add(new FileItem() { filename = fileInfo.Name, fileUrl = fileInfo.FullName });
             sourceItem.Version = sourceItem.VersionList.Last();
             aggregator.GetEvent<AddItemEvent>().Publish(sourceItem);

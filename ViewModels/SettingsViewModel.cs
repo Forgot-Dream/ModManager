@@ -1,17 +1,15 @@
-﻿using ImTools;
-using ModManager.Common;
+﻿using ModManager.Common;
 using ModManager.Common.Events;
+using ModManager.Common.Structs;
 using ModManager.Extension;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using static ModManager.Utils.RequestUtil;
 
 namespace ModManager.ViewModels
@@ -56,11 +54,11 @@ namespace ModManager.ViewModels
             }
         }
 
-        private async Task<ObservableCollection<SourceItem>> RefreshAsync(List<SourceItem> list)
+        private async Task<ObservableCollection<ModItem>> RefreshAsync(List<ModItem> list)
         {
             return await Task.Run(() =>
             {
-                ObservableCollection<SourceItem> result = new();
+                ObservableCollection<ModItem> result = new();
                 foreach (var item in list)
                 {
                     var index = SourceItems.IndexOf(item);
@@ -114,13 +112,12 @@ namespace ModManager.ViewModels
             }
         }
 
-        private void AddItem(SourceItem obj)
+        private void AddItem(ModItem obj)
         {
-            if (SourceItems == null)
-                SourceItems = new ObservableCollection<SourceItem>();
+            SourceItems ??= new ObservableCollection<ModItem>();
             obj.PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == nameof(SourceItem.IsSelected))
+                if (args.PropertyName == nameof(ModItem.IsSelected))
                     RaisePropertyChanged(nameof(IsAllItemsSelected));
             };
             SourceItems.Add(obj);
@@ -138,8 +135,10 @@ namespace ModManager.ViewModels
 
         async Task<bool> Confirm(string hint)
         {
-            var param = new DialogParameters();
-            param.Add("args", hint);
+            var param = new DialogParameters
+            {
+                { "args", hint }
+            };
             var result = await dialogHostService.ShowDialog("MessageView", param);
             if (result.Result == ButtonResult.Cancel)
                 return false;
@@ -170,7 +169,7 @@ namespace ModManager.ViewModels
             }
         }
 
-        private static void SelectAll(bool select, ObservableCollection<SourceItem> models)
+        private static void SelectAll(bool select, ObservableCollection<ModItem> models)
         {
             if (models == null || models.Count == 0)
                 return;
@@ -179,24 +178,24 @@ namespace ModManager.ViewModels
                 model.IsSelected = select;
             }
         }
-        void SetSourceItems(ObservableCollection<SourceItem> sourceItems)
+        void SetSourceItems(ObservableCollection<ModItem> sourceItems)
         {
             SourceItems = sourceItems;
             foreach (var item in SourceItems)
             {
                 item.PropertyChanged += (sender, args) =>
                 {
-                    if (args.PropertyName == nameof(SourceItem.IsSelected))
+                    if (args.PropertyName == nameof(ModItem.IsSelected))
                         RaisePropertyChanged(nameof(IsAllItemsSelected));
                 };
             }
         }
 
-        private ObservableCollection<SourceItem> sourceItems;
+        private ObservableCollection<ModItem> sourceItems;
         private readonly IEventAggregator aggregator;
         private readonly IDialogHostService dialogHostService;
 
-        public ObservableCollection<SourceItem> SourceItems
+        public ObservableCollection<ModItem> SourceItems
         {
             get { return sourceItems; }
             set { sourceItems = value; ConfigExt.SourceItems = value; RaisePropertyChanged(); }

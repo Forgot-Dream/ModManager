@@ -1,4 +1,4 @@
-﻿using ModManager.Common;
+﻿using ModManager.Common.Structs;
 using System.Collections.ObjectModel;
 
 namespace ModManager.Extension
@@ -7,6 +7,6 @@ namespace ModManager.Extension
     {
         public static string MCVersion;
         public static string LoaderVersion;
-        public static ObservableCollection<SourceItem> SourceItems;
+        public static ObservableCollection<ModItem> SourceItems;
     }
 }

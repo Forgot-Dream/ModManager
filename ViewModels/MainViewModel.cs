@@ -1,5 +1,6 @@
 ﻿using ModManager.Common;
 using ModManager.Common.Events;
+using ModManager.Common.Structs;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -22,19 +23,29 @@ namespace ModManager.ViewModels
             this.aggregator = aggregator;
             this.dialogHostService = dialogHostService;
             NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
+            ChangeViewCommand = new DelegateCommand<string>(ChangeView);
             aggregator.GetEvent<MessageEvent>().Subscribe(MessageDialogOpen);
         }
 
         private void MessageDialogOpen(string obj)
         {
-            var param = new DialogParameters();
-            param.Add("args", obj);
+            var param = new DialogParameters
+            {
+                { "args", obj }
+            };
             dialogHostService.ShowDialog("MessageView", param);
         }
 
         private ObservableCollection<MenuBar> menuBars;
         public DelegateCommand<MenuBar> NavigateCommand { get; private set; }
+        public DelegateCommand<string> ChangeViewCommand { get; private set; }
 
+        private void ChangeView(string obj)
+        {
+            if (obj == null || string.IsNullOrEmpty(obj))
+                return;
+            regionManager.Regions["MainViewRegion"].RequestNavigate(obj);
+        }
         private void Navigate(MenuBar obj)
         {
             if (obj == null || string.IsNullOrWhiteSpace(obj.Name_Space))
@@ -50,9 +61,7 @@ namespace ModManager.ViewModels
 
         void CreateMenu()
         {
-            MenuBars.Add(new MenuBar() { Icon = "Minecraft", Name = "导入", Name_Space = "ImportView" });
-            MenuBars.Add(new MenuBar() { Icon = "CogOutline", Name = "设置", Name_Space = "SettingsView" });
-            MenuBars.Add(new MenuBar() { Icon = "Download", Name = "导出", Name_Space = "ExportView" });
+            MenuBars.Add(new MenuBar() { Icon = "Download", Name = "Test", Name_Space = "SearchView" });
         }
 
         public void Configure()

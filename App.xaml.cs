@@ -4,14 +4,7 @@ using ModManager.ViewModels.Dialogs;
 using ModManager.Views;
 using ModManager.Views.Dialogs;
 using Prism.DryIoc;
-using Prism.Events;
 using Prism.Ioc;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ModManager
@@ -28,7 +21,7 @@ namespace ModManager
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.Register<IDialogHostService,DialogHostService>();
+            containerRegistry.Register<IDialogHostService, DialogHostService>();
 
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
             containerRegistry.RegisterForNavigation<ImportView, ImportViewModel>();
@@ -37,15 +30,16 @@ namespace ModManager
             containerRegistry.RegisterForNavigation<AddCurseforgeModView, AddCurseforgeModViewModel>();
             containerRegistry.RegisterForNavigation<AddGithubModView, AddGithubModViewModel>();
             containerRegistry.RegisterForNavigation<AddLocalFileView, AddLocalFileViewModel>();
-            containerRegistry.RegisterForNavigation<MessageView,MessageViewModel>();
+            containerRegistry.RegisterForNavigation<MessageView, MessageViewModel>();
+            containerRegistry.RegisterForNavigation<ProjectView, ProjectViewModel>();
+            containerRegistry.RegisterForNavigation<SearchView, SearchViewModel>();
             containerRegistry.RegisterForNavigation<ProgressView>();
         }
 
         protected override void OnInitialized()
         {
-            var service = App.Current.MainWindow.DataContext as IConfigureService;
-            if (service != null)
-                service.Configure();
+            IConfigureService? service = Current.MainWindow.DataContext as IConfigureService;
+            service?.Configure();
             base.OnInitialized();
         }
     }

@@ -1,11 +1,11 @@
 ﻿using Prism.Mvvm;
 using System.Collections.Generic;
 
-namespace ModManager.Common
+namespace ModManager.Common.Structs
 {
-    public class SourceItem : BindableBase
+    public class ModItem : BindableBase
     {
-        public SourceItem()
+        public ModItem()
         {
             VersionList = new List<FileItem>();
         }

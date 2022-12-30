@@ -3,11 +3,11 @@
 namespace ModManager.Views
 {
     /// <summary>
-    /// SettingsView.xaml 的交互逻辑
+    /// ProjectView.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsView : UserControl
+    public partial class ProjectView : UserControl
     {
-        public SettingsView()
+        public ProjectView()
         {
             InitializeComponent();
         }

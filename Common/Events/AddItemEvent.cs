@@ -1,8 +1,9 @@
-﻿using Prism.Events;
+﻿using ModManager.Common.Structs;
+using Prism.Events;
 
 namespace ModManager.Common.Events
 {
-    public class AddItemEvent:PubSubEvent<SourceItem>
+    public class AddItemEvent:PubSubEvent<ModItem>
     {
     }
 }

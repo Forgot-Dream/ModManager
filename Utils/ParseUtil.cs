@@ -1,4 +1,4 @@
-﻿using ModManager.Common;
+﻿using ModManager.Common.Structs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
@@ -16,14 +16,14 @@ namespace ModManager.Utils
         public static Regex Curseforge_Regex = new Regex(@"https://www.curseforge.com/minecraft/mc-mods/[-\w]*");
         public static Regex Name_Regex = new Regex(@"\[.*\]");
 
-        public static async Task<ObservableCollection<SourceItem>> GetDataFromAPI(ObservableCollection<SourceItem> sourceItems, string MCVer)
+        public static async Task<ObservableCollection<ModItem>> GetDataFromAPI(ObservableCollection<ModItem> sourceItems, string MCVer)
         {
             return await Task.Run(() =>
             {
                 int GetDataSuccess = 0;
                 int GetDataError = 0;
-                ObservableCollection<SourceItem> retsi = new();
-                foreach (SourceItem sourceItem in sourceItems)
+                ObservableCollection<ModItem> retsi = new();
+                foreach (ModItem sourceItem in sourceItems)
                 {
                     switch (sourceItem.Type)
                     {
@@ -53,9 +53,9 @@ namespace ModManager.Utils
             });
         }
 
-        public static SourceItem? ParseModJson(JObject ModJson, FileInfo file)
+        public static ModItem? ParseModJson(JObject ModJson, FileInfo file)
         {
-            SourceItem si;
+            ModItem si;
             if (ModJson["contact"] == null || (ModJson["contact"]["homepage"] == null && ModJson["contact"]["sources"] == null))
             {
                 return null;
@@ -77,7 +77,7 @@ namespace ModManager.Utils
                 }
             }
         }
-        public static SourceItem? ParseFileLine(string Content)
+        public static ModItem? ParseFileLine(string Content)
         {
             var name_match = Name_Regex.Match(Content);
             var name = name_match.Success ? name_match.Groups[0].Value : null;
@@ -90,7 +90,7 @@ namespace ModManager.Utils
                 var url = match.Success ? match.Groups[0].Value : source_url;
                 var type = "Github";
                 var url_split = url.Split('/');
-                return new SourceItem() { Comment = name, Type = type, Name = url_split[url_split.Length - 1], URL = url };
+                return new ModItem() { Comment = name, Type = type, Name = url_split[url_split.Length - 1], URL = url };
             }
             var curseforge_match = Curseforge_Regex.Match(Content);
             if (curseforge_match.Success)
@@ -98,14 +98,14 @@ namespace ModManager.Utils
                 var url = curseforge_match.Groups[0].Value;
                 var type = "Curseforge";
                 var url_split = url.Split('/');
-                return new SourceItem() { Comment = name, Type = type, URL = url, Name = url_split[url_split.Length - 1] };
+                return new ModItem() { Comment = name, Type = type, URL = url, Name = url_split[url_split.Length - 1] };
             }
             return null;
         }
 
-        public static SourceItem? ParseCurseforgeResponse(JToken content,string MCVer)
+        public static ModItem? ParseCurseforgeResponse(JToken content,string MCVer)
         {
-            SourceItem sourceitem = new();
+            ModItem sourceitem = new();
             sourceitem.URL = content["links"]["websiteUrl"].Value<string>();
             sourceitem.CurseforgeID = content["Id"].Value<string>();
             foreach (var fileitem in content["latestFilesIndexes"])

@@ -1,4 +1,4 @@
-﻿using ModManager.Common;
+﻿using ModManager.Common.Structs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -22,7 +22,7 @@ namespace ModManager.Utils
         private static string mc_curseforge_id = "432";
 
 
-        public static bool GetGithubMod(SourceItem sourceItem, string? MCVer) //获取github来源Mod的Release
+        public static bool GetGithubMod(ModItem sourceItem, string? MCVer) //获取github来源Mod的Release
         {
             var request_url = sourceItem.URL.Replace("https://github.com", github_api_url_prefix + "/repos") + "/releases";
             Console.WriteLine(request_url);
@@ -43,7 +43,7 @@ namespace ModManager.Utils
             return false;
         }
 
-        public static bool TryChangeSourceToCurseforge(SourceItem sourceItem, string? MCVer) // 尝试换源为Curseforge
+        public static bool TryChangeSourceToCurseforge(ModItem sourceItem, string? MCVer) // 尝试换源为Curseforge
         {
             Dictionary<string, string> Param = new Dictionary<string, string>();
             Param.Add("gameId", mc_curseforge_id); //Curseforge MC ID
@@ -102,33 +102,33 @@ namespace ModManager.Utils
         }
 
 
-        public static async Task<SourceItem?> GetCurseforgeModItem(string CurseforgeID, string? MCVer)
+        public static async Task<ModItem?> GetCurseforgeModItem(string CurseforgeID, string? MCVer)
         {
             return await Task.Run(() =>
             {
-                SourceItem ret_item = new SourceItem() { CurseforgeID = CurseforgeID, Type = "Curseforge" };
+                ModItem ret_item = new ModItem() { CurseforgeID = CurseforgeID, Type = "Curseforge" };
                 if (!GetCurseforgeMod(ret_item, MCVer))
                     return null;
                 return ret_item;
             });
         }
 
-        public static async Task<SourceItem> GetGithubModItem(string url, string? MCVer)
+        public static async Task<ModItem> GetGithubModItem(string url, string? MCVer)
         {
             return await Task.Run(() =>
             {
-                SourceItem ret_item = new SourceItem() { Type = "Github", URL = url };
+                ModItem ret_item = new ModItem() { Type = "Github", URL = url };
                 GetGithubMod(ret_item, MCVer);
                 return ret_item;
             });
         }
 
-        public static bool GetCurseforgeMod(SourceItem sourceitem, string? MCVer) //获取Curseforge的版本信息
+        public static bool GetCurseforgeMod(ModItem sourceitem, string? MCVer) //获取Curseforge的版本信息
         {
             string response;
             if (sourceitem.CurseforgeID == null)
             {
-                String CurseForgeName = sourceitem.URL.Replace("https://www.curseforge.com/minecraft/mc-mods/", "");
+                string CurseForgeName = sourceitem.URL.Replace("https://www.curseforge.com/minecraft/mc-mods/", "");
                 Dictionary<string, string> Param = new Dictionary<string, string>();
                 Param.Add("gameId", mc_curseforge_id); //Curseforge MC ID
                 Param.Add("searchFilter", CurseForgeName.ToLower()); //查询字符串

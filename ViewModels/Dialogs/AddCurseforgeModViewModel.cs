@@ -43,6 +43,7 @@ namespace ModManager.ViewModels.Dialogs
 
         private async void Save()
         {
+            if(CurseforgeID == null) { Cancel();return; }
             DialogHost.Close(DialogHostName, new DialogResult(ButtonResult.OK));
             aggregator.GetEvent<LoadingEvent>().Publish(true);
             var item = await GetCurseforgeModItem(CurseforgeID, ConfigExt.MCVersion);

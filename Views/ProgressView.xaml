@@ -13,9 +13,10 @@
             <ProgressBar
                 Width="40"
                 Height="40"
-                Margin="20"
+                Margin="20,20,20,15"
                 IsIndeterminate="True"
                 Style="{StaticResource MaterialDesignCircularProgressBar}" />
+            <TextBlock Text="Loading..." Cursor="Arrow" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         </StackPanel>
     </Grid>
 </UserControl>
