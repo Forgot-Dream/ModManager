@@ -4,10 +4,10 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using static ModManager.Common.Structs.CurseforgeModItem;
 
 namespace ModManager.Utils.APIs
 {
@@ -28,6 +28,10 @@ namespace ModManager.Utils.APIs
         /// </summary>
         private const string MinecraftGameId = "432";
 
+        /// <summary>
+        /// 获取一个静态实例
+        /// </summary>
+        /// <returns>Curseforge Api实例</returns>
         public static CurseforgeAPI API()
         {
             api ??= new CurseforgeAPI();
@@ -80,8 +84,22 @@ namespace ModManager.Utils.APIs
         /// <returns>对应ID的CurseforgeModItem实例</returns>
         public CurseforgeModItem GetModFromId(int ModID)
         {
-            var item = APIGet($"/v1/mods/{ModID}", null)["data"];
-            return CurseforgeModItem.fromJson(item);
+            var reply = APIGet($"/v1/mods/{ModID}", null);
+            return fromJson(reply["data"]);
+        }
+
+        /// <summary>
+        /// 使用Curseforge Mod Id查询Mod的详细文件列表
+        /// </summary>
+        /// <param name="ModID">Curseforge Mod ID</param>
+        /// <returns>对应带有文件信息的列表</returns>
+        public List<CurseforgeModFileInfo> GetModFileInfos(int ModID)
+        {
+            var reply = APIGet($"/v1/mods/{ModID}/files", null);
+            List<CurseforgeModFileInfo> curseforgeModFileInfos = new();
+            foreach (var file in reply["data"])
+                curseforgeModFileInfos.Add(CurseforgeModFileInfo.fromJson(file));
+            return curseforgeModFileInfos;
         }
 
         /// <summary>

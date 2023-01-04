@@ -33,6 +33,7 @@ namespace ModManager
             containerRegistry.RegisterForNavigation<MessageView, MessageViewModel>();
             containerRegistry.RegisterForNavigation<ProjectView, ProjectViewModel>();
             containerRegistry.RegisterForNavigation<SearchView, SearchViewModel>();
+            containerRegistry.RegisterForNavigation<CurseforgeModView,CurseforgeModViewModel>();
             containerRegistry.RegisterForNavigation<ProgressView>();
         }
 

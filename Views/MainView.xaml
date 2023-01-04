@@ -14,7 +14,7 @@
     Height="800"
     d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    Icon="/Views/icon.PNG"
+    Icon="/Assets/icon.PNG"
     mc:Ignorable="d">
     <materialDesign:DialogHost
         x:Name="Dialoghost"

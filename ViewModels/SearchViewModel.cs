@@ -4,12 +4,11 @@ using ModManager.Utils.APIs;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace ModManager.ViewModels
 {
@@ -17,6 +16,7 @@ namespace ModManager.ViewModels
     {
         private readonly CurseforgeAPI Api;
         private readonly IEventAggregator aggregator;
+        private readonly IRegionManager regionManager;
         private string searchfilter;
         private string gameversion;
         private int classid;
@@ -50,29 +50,44 @@ namespace ModManager.ViewModels
             set { moditems = value; RaisePropertyChanged(); }
         }
 
-        SearchViewModel(IEventAggregator aggregator)
+        SearchViewModel(IEventAggregator aggregator,IRegionManager regionManager)
         {
             this.aggregator = aggregator;
+            this.regionManager = regionManager;
             Api = CurseforgeAPI.API();
             SearchCommand = new DelegateCommand<object>(Search);
             ResetCommand = new DelegateCommand<object>(Reset);
+            ViewDetailsCommand = new DelegateCommand<object>(ViewDetails);
             Init();
+            Search(null); //进入的时候先加载一波mod
         }
 
-        async void Init()//加载
+        async void Init() //加载部分数据
         {
             await Task.Run(() => {
-                GameVersions = Api.GetMinecraftVersionList(); 
+                GameVersions = Api.GetMinecraftVersionList();
             });
         }
         public DelegateCommand<object> SearchCommand { get; private set; }
         public DelegateCommand<object> ResetCommand { get; private set; }
+        public DelegateCommand<object> ViewDetailsCommand { get; private set; }
 
-        async void Search(object obj) {
+        async void Search(object? obj) {
             aggregator.ShowProgressBar(true);
             ModItems = await Api.SearchMods(GameVersion, 0, searchFilter, sortField+1);
             aggregator.ShowProgressBar(false);
         }
-        void Reset(object obj) { searchFilter = ""; GameVersion = ""; classId = 0; sortField = -1; }
+        void Reset(object? obj) { searchFilter = ""; GameVersion = ""; classId = 0; sortField = -1; }
+
+        void ViewDetails(object index)
+        {
+            if((int)index == -1)
+                return;
+            var param = new NavigationParameters
+            {
+                { "ModItem", ModItems[(int)index] }
+            };
+            regionManager.RequestNavigate("MainViewRegion", "CurseforgeModView", param);
+        }
     }
 }

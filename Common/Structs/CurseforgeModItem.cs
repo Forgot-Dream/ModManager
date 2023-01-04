@@ -1,14 +1,28 @@
-﻿using ModManager.Utils;
+﻿using ModManager.Extension;
+using ModManager.Utils;
+using ModManager.Utils.APIs;
 using Newtonsoft.Json.Linq;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace ModManager.Common.Structs
 {
     public class CurseforgeModItem : BindableBase
     {
+        enum ModLoaderType
+        {
+            ANY,
+            FORGE,
+            CAULDRON,
+            LITELOADER,
+            FABRIC,
+            QUILT
+        }
+
         private CurseforgeModInfo modInfo;
         /// <summary>
         /// Curseforge Mod的基本信息
@@ -19,18 +33,84 @@ namespace ModManager.Common.Structs
             private set { modInfo = value; }
         }
 
-        private List<CurseforgeModFileInfo> fileInfos;
+        private List<Version2FileInfo> fileInfos = new();
         /// <summary>
         /// Curseforge Mod的文件列表
         /// </summary>
-        public List<CurseforgeModFileInfo> FileInfos
+        public List<Version2FileInfo> FileInfos
         {
             get { return fileInfos; }
-            private set { fileInfos = value; }
+            private set { fileInfos = value; RaisePropertyChanged(); }
         }
 
         /// <summary>
-        /// 从json对象中格式化
+        /// ModLoader的类型
+        /// </summary>
+        private List<int> ModLoaderTypes = new();
+
+        /// <summary>
+        /// 支持的游戏版本
+        /// </summary>
+        private List<int> SupportedGameVersions = new();
+
+        /// <summary>
+        /// 用于绑定的加载器字符串
+        /// </summary>
+        public string SupportedModLoader
+        {
+            get
+            {
+                var supportedmodloader = "[";
+                for (int i = 0; i < ModLoaderTypes.Count; i++)
+                {
+                    switch (ModLoaderTypes[i])
+                    {
+                        case (int)ModLoaderType.FORGE: supportedmodloader += " Forge "; break;
+                        case (int)ModLoaderType.FABRIC: supportedmodloader += " Fabric "; break;
+                        case (int)ModLoaderType.QUILT: supportedmodloader += " Quilt "; break;
+                    }
+                }
+                if (supportedmodloader.Length == 1)
+                    supportedmodloader += " Unknown ]";
+                else
+                    supportedmodloader += "]";
+                return supportedmodloader;
+            }
+        }
+
+        /// <summary>
+        /// 用于绑定的支持游戏版本
+        /// </summary>
+        public string SupportedVersion
+        {
+            get
+            {
+                int lastversion = 0;
+                int version;
+                StringBuilder supportversion = new();
+                for (version = 1; version < SupportedGameVersions.Count; version++)
+                {
+                    if (SupportedGameVersions[version] - SupportedGameVersions[version - 1] > 1)
+                    {
+                        if (lastversion == version - 1)
+                        {
+                            supportversion.Append($"| 1.{SupportedGameVersions[lastversion]} ");
+                        }
+                        else
+                        {
+                            supportversion.Append($"| 1.{SupportedGameVersions[lastversion]}-1.{SupportedGameVersions[version - 1]} ");
+                        }
+                        lastversion = version;
+                    }
+                }
+                if (lastversion != version)
+                    supportversion.Append($"| 1.{SupportedGameVersions[lastversion]}-1.{SupportedGameVersions[version - 1]} |");
+                return supportversion.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 从json对象中序列化
         /// </summary>
         /// <param name="jToken">json对象</param>
         /// <returns>CurseforgeMod实例</returns>
@@ -40,11 +120,52 @@ namespace ModManager.Common.Structs
             {
                 ModInfo = CurseforgeModInfo.fromJson(jToken)
             };
+
+            foreach (var file in jToken["latestFilesIndexes"])
+            {
+                var gameversion = int.Parse(file["gameVersion"].Value<string>().Split('.')[1]);
+                if (!file["modLoader"].IsNullOrEmpty())
+                {
+                    var loadertype = file["modLoader"].Value<int>();
+                    if (!item.ModLoaderTypes.Contains(loadertype))
+                        item.ModLoaderTypes.Add(loadertype);
+                }
+                if (!item.SupportedGameVersions.Contains(gameversion))
+                    item.SupportedGameVersions.Add(gameversion);
+            }
+
+            item.SupportedGameVersions.Sort();
+            item.ModLoaderTypes.Sort();
+
             return item;
         }
-
+        /// <summary>
+        /// 要求文件信息
+        /// </summary>
+        public void AcquireFileInfo()
+        {
+            if (FileInfos.Count > 0)
+                return;
+            var infos = CurseforgeAPI.API().GetModFileInfos(ModInfo.ID);
+            var orderedlist =
+                from fileinfo in infos
+                group fileinfo by fileinfo.GameVersion into newList
+                orderby newList.Key descending
+                select newList;
+            foreach(var item in orderedlist)
+            {
+                var v2f = new Version2FileInfo()
+                {
+                    GameVersion = item.Key
+                };
+                foreach(var fileinfo in item)
+                {
+                    v2f.FileInfos.Add(fileinfo);
+                }
+                FileInfos.Add(v2f);
+            }
+        }
     }
-
     public class CurseforgeModInfo : BindableBase
     {
         public static CurseforgeModInfo fromJson(JToken jToken)
@@ -56,9 +177,10 @@ namespace ModManager.Common.Structs
                 Slug = jToken["slug"].Value<string?>(),
                 WebsiteURL = jToken["links"]["websiteUrl"].Value<string?>(),
                 Summary = jToken["summary"].Value<string?>(),
-                DownloadCount = jToken["downloadCount"].Value<Int64>()
+                DownloadCount = jToken["downloadCount"].Value<Int64>(),
+                DateModified = DateTime.Parse(jToken["dateModified"].Value<string?>())
             };
-            if (jToken["logo"].HasValues)
+            if (!jToken["logo"].IsNullOrEmpty())
                 info.IconURL = jToken["logo"]["thumbnailUrl"].Value<string>();
 
             foreach (var author in jToken["authors"])
@@ -76,7 +198,7 @@ namespace ModManager.Common.Structs
         {
             if (IconURL == null)
                 return;
-            var path = System.Environment.CurrentDirectory + $"/caches/curseforge/{this.ID}.png";
+            var path = System.Environment.CurrentDirectory + $"/caches/curseforge/{ID}.png";
             if (System.IO.File.Exists(path))
             {
                 IconPath = path;
@@ -204,6 +326,16 @@ namespace ModManager.Common.Structs
             set { downloadcount = value; }
         }
 
+        private DateTime datemodified;
+        /// <summary>
+        /// 该项目的修改时间（大概也能认为是更新时间？）
+        /// </summary>
+        public DateTime DateModified
+        {
+            get { return datemodified; }
+            set { datemodified = value; }
+        }
+
 
     }
     public class CurseforgeModFileInfo
@@ -220,6 +352,14 @@ namespace ModManager.Common.Structs
                 DownloadURL = jToken["downloadUrl"].Value<string?>(),
                 FileDate = DateTime.Parse(jToken["fileDate"].Value<string?>())
             };
+            foreach(var item in jToken["sortableGameVersions"])// I don't know why CF put game version and loader type together.
+            {
+                if (!item["gameVersion"].IsNullOrEmpty())
+                {
+                    info.GameVersion = item["gameVersion"].Value<string>();
+                    break;
+                }
+            }
             return info;
         }
 
@@ -293,5 +433,24 @@ namespace ModManager.Common.Structs
             set { filelength = value; }
         }
 
+        private string? gameversion;
+        /// <summary>
+        /// 该文件对应的游戏版本
+        /// </summary>
+        public string? GameVersion
+        {
+            get { return gameversion; }
+            set { gameversion = value; }
+        }
+
+    }
+    public class Version2FileInfo
+    {
+        public Version2FileInfo()
+        {
+            FileInfos = new();
+        }
+        public string? GameVersion { get; set; }
+        public List<CurseforgeModFileInfo> FileInfos { get; set; }
     }
 }

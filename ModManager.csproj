@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Views\icon.PNG" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -20,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Views\icon.PNG" />
+    <Resource Include="Assets\icon.PNG" />
   </ItemGroup>
 
 </Project>
