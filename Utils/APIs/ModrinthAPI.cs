@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using ModManager.Common.Structs;
+using ModManager.Extension;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +18,88 @@ namespace ModManager.Utils.APIs
         /// </summary>
         private const string APIPrefix = "https://api.modrinth.com";
 
-        
+        private static ModrinthAPI api;
+
+        /// <summary>
+        /// 获取一个静态实例
+        /// </summary>
+        /// <returns>Modrinth Api实例</returns>
+        public static ModrinthAPI API()
+        {
+            api ??= new ModrinthAPI();
+            return api;
+        }
+
+        /// <summary>
+        /// 向Modrinth发送一个查询请求（异步）
+        /// </summary>
+        /// <param name="query">查询的字符串</param>
+        /// <param name="index">排序方式 relevance=相似度 downloads=下载数 follows=关注数 newest=项目创建时间 updated=更新时间</param>
+        /// <param name="offset">偏移量</param>
+        /// <param name="facets">查询条件</param>
+        /// <param name="limit">每页限制</param>
+        /// <returns>带有搜索结果的列表</returns>
+        public async Task<List<ModrinthModItem>?> SearchMods(string query, string? index, int? offset, Facets? facets, int limit = 20)
+        {
+            return await Task.Run(() =>
+            {
+                Dictionary<string, string> Params = new()
+            {
+                { "query", query },
+                { "limit", limit.ToString() }
+            };
+
+                if (index != null)
+                    Params.Add("index", index);
+                if (offset != null)
+                    Params.Add("offset", offset.ToString());
+                if (facets != null)
+                    Params.Add("facets", facets.ToString());
+
+                var response = APIGet("/v2/search", Params);
+                if (response != null && !response["hits"].IsNullOrEmpty())
+                {
+                    List<ModrinthModItem> Items = new();
+                    foreach (var json in response["hits"])
+                        Items.Add(ModrinthModItem.fromJson(json));
+                    return Items;
+                }
+                return null;
+            });
+            
+        }
+
+        /// <summary>
+        /// 从Modrinth查询MC的版本号
+        /// </summary>
+        /// <returns>MC版本号的列表</returns>
+        public List<string> GetMinecraftVersionList()
+        {
+
+            var reply = APIGet("/v2/tag/game_version", null);
+            List<string> retlist = new();
+            foreach (var version in reply)
+                retlist.Add(version["version"].Value<string>());
+            return retlist;
+        }
+
+        /// <summary>
+        /// 获取Mod的版本信息
+        /// </summary>
+        /// <param name="id">Mod的唯一ID</param>
+        /// <returns>Mod的版本信息列表</returns>
+        public List<ModrinthModFileInfo>? GetModVersions(string id)
+        {
+            var response = APIGet($"/v2/project/{id}/version", null);
+            if (response == null || response.IsNullOrEmpty())
+                return null;
+            List<ModrinthModFileInfo> Items = new();
+            foreach (var json in response)
+            {
+                Items.Add(ModrinthModFileInfo.fromJson(json));
+            }
+            return Items;
+        }
 
 
         /// <summary>
@@ -25,7 +108,7 @@ namespace ModManager.Utils.APIs
         /// <param name="Path">子路由</param>
         /// <param name="Params">参数</param>
         /// <returns>Json对象</returns>
-        private JObject? APIGet(string Path,Dictionary<string,string>? Params)
+        private JToken? APIGet(string Path, Dictionary<string, string>? Params)
         {
             StringBuilder builder = new();
             builder.Append(APIPrefix + Path);
@@ -46,7 +129,7 @@ namespace ModManager.Utils.APIs
             HttpClient httpClient = new();
             HttpRequestMessage request = new(HttpMethod.Get, builder.ToString());
             request.Headers.Add("Accept", "application/json"); //设置接受类型
-            request.Headers.Add("User-Agent", "Forgot-Dream/ModManager/1.56.0"); //按文档要求写入User-Agent
+            request.Headers.Add("User-Agent", @"Forgot-Dream/ModManager"); //按文档要求写入User-Agent
             try
             {
                 var response = httpClient.Send(request);
@@ -56,9 +139,9 @@ namespace ModManager.Utils.APIs
                 string retString = myStreamReader.ReadToEnd();
                 myStreamReader.Close();
                 myResponseStream.Close();
-                return JObject.Parse(retString);
+                return JToken.Parse(retString);
             }
-            catch (Exception e) { Console.WriteLine(e.Message); return null; }
+            catch (Exception e) { Debug.WriteLine(e.StackTrace); return null; }
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Windows.Controls;
 
 namespace ModManager.ViewModels
 {
-    public class SearchViewModel : BindableBase
+    public class CurseforgeSearchViewModel : BindableBase
     {
         private readonly CurseforgeAPI Api;
         private readonly IEventAggregator aggregator;
@@ -50,7 +50,7 @@ namespace ModManager.ViewModels
             set { moditems = value; RaisePropertyChanged(); }
         }
 
-        SearchViewModel(IEventAggregator aggregator,IRegionManager regionManager)
+        CurseforgeSearchViewModel(IEventAggregator aggregator,IRegionManager regionManager)
         {
             this.aggregator = aggregator;
             this.regionManager = regionManager;

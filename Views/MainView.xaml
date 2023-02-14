@@ -80,7 +80,7 @@
                                 materialDesign:ButtonAssist.CornerRadius="8"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                                 Command="{Binding ChangeViewCommand}"
-                                CommandParameter="SearchView">
+                                CommandParameter="CurseforgeSearchView">
                                 <Button.Content>
                                     <DockPanel>
                                         <materialDesign:PackIcon
@@ -95,7 +95,9 @@
                             <Button
                                 Margin="0,4,0,4"
                                 materialDesign:ButtonAssist.CornerRadius="8"
-                                Style="{StaticResource MaterialDesignOutlinedDarkButton}">
+                                Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                Command="{Binding ChangeViewCommand}"
+                                CommandParameter="ModrinthSearchView">
                                 <Button.Content>
                                     <DockPanel>
                                         <materialDesign:PackIcon

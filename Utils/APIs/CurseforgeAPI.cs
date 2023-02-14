@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -71,7 +72,7 @@ namespace ModManager.Utils.APIs
                 List<CurseforgeModItem> modItems = new();
                 foreach (var item in reply["data"])
                 {
-                    modItems.Add(CurseforgeModItem.fromJson(item));
+                    modItems.Add(fromJson(item));
                 }
                 return modItems;
             });
@@ -108,7 +109,7 @@ namespace ModManager.Utils.APIs
         /// <returns>MC版本号的列表</returns>
         public List<string> GetMinecraftVersionList()
         {
-            
+
             var reply = APIGet("/v1/minecraft/version", null);
             List<string> retlist = new();
             foreach (var version in reply["data"])
@@ -121,7 +122,7 @@ namespace ModManager.Utils.APIs
         /// <param name="path">子路径</param>
         /// <param name="Param">参数</param>
         /// <returns>响应结果的json对象</returns>
-        private JObject? APIGet(string path, Dictionary<string, string>? Param)
+        private JToken? APIGet(string path, Dictionary<string, string>? Param)
         {
             StringBuilder builder = new();
             builder.Append(APIPrefix + path);
@@ -152,9 +153,9 @@ namespace ModManager.Utils.APIs
                 string retString = myStreamReader.ReadToEnd();
                 myStreamReader.Close();
                 myResponseStream.Close();
-                return JObject.Parse(retString);
+                return JToken.Parse(retString);
             }
-            catch (Exception e) { Console.WriteLine(e.Message); return null; }
+            catch (Exception e) { Debug.WriteLine(e.Message); return null; }
         }
 
         /// <summary>
@@ -163,7 +164,7 @@ namespace ModManager.Utils.APIs
         /// <param name="path">子路径</param>
         /// <param name="Data">数据</param>
         /// <returns>返回查询结果的Json对象</returns>
-        private JObject? APIPost(string path, Dictionary<string, List<uint>> Data)
+        private JToken? APIPost(string path, Dictionary<string, List<uint>> Data)
         {
             HttpClient httpClient = new();
             HttpRequestMessage requestMessage = new(HttpMethod.Post, APIPrefix + path);
@@ -180,9 +181,9 @@ namespace ModManager.Utils.APIs
                 string retString = myStreamReader.ReadToEnd();
                 myStreamReader.Close();
                 myResponseStream.Close();
-                return JObject.Parse(retString);
+                return JToken.Parse(retString);
             }
-            catch (Exception e) { Console.WriteLine(e.Message); return null; }
+            catch (Exception e) { Debug.WriteLine(e.Message); return null; }
         }
     }
 }

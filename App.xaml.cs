@@ -3,6 +3,7 @@ using ModManager.ViewModels;
 using ModManager.ViewModels.Dialogs;
 using ModManager.Views;
 using ModManager.Views.Dialogs;
+using ModManager.Views.SearchView;
 using Prism.DryIoc;
 using Prism.Ioc;
 using System.Windows;
@@ -32,8 +33,14 @@ namespace ModManager
             containerRegistry.RegisterForNavigation<AddLocalFileView, AddLocalFileViewModel>();
             containerRegistry.RegisterForNavigation<MessageView, MessageViewModel>();
             containerRegistry.RegisterForNavigation<ProjectView, ProjectViewModel>();
-            containerRegistry.RegisterForNavigation<SearchView, SearchViewModel>();
+
+            //Curseforge界面注册
+            containerRegistry.RegisterForNavigation<CurseforgeSearchView, CurseforgeSearchViewModel>();
             containerRegistry.RegisterForNavigation<CurseforgeModView,CurseforgeModViewModel>();
+
+            //Modrinth界面注册
+            containerRegistry.RegisterForNavigation<ModrinthSearchView, ModrinthSearchViewModel>();
+
             containerRegistry.RegisterForNavigation<ProgressView>();
         }
 

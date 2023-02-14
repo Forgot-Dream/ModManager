@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ModManager.Views
+namespace ModManager.Views.SearchView
 {
     /// <summary>
-    /// SearchView.xaml 的交互逻辑
+    /// ModrinthSearchView.xaml 的交互逻辑
     /// </summary>
-    public partial class SearchView : UserControl
+    public partial class ModrinthSearchView : UserControl
     {
-        public SearchView()
+        public ModrinthSearchView()
         {
             InitializeComponent();
         }
