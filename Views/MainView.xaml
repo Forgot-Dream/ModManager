@@ -78,9 +78,9 @@
                             <Button
                                 Margin="0,4,0,4"
                                 materialDesign:ButtonAssist.CornerRadius="8"
-                                Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                                 Command="{Binding ChangeViewCommand}"
-                                CommandParameter="CurseforgeSearchView">
+                                CommandParameter="CurseforgeSearchView"
+                                Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
                                     <DockPanel>
                                         <materialDesign:PackIcon
@@ -95,9 +95,9 @@
                             <Button
                                 Margin="0,4,0,4"
                                 materialDesign:ButtonAssist.CornerRadius="8"
-                                Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                                 Command="{Binding ChangeViewCommand}"
-                                CommandParameter="ModrinthSearchView">
+                                CommandParameter="ModrinthSearchView"
+                                Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
                                     <DockPanel>
                                         <materialDesign:PackIcon
@@ -124,21 +124,7 @@
                                     </DockPanel>
                                 </Button.Content>
                             </Button>
-                            <Button
-                                Margin="0,4,0,4"
-                                materialDesign:ButtonAssist.CornerRadius="8"
-                                Style="{StaticResource MaterialDesignOutlinedDarkButton}">
-                                <Button.Content>
-                                    <DockPanel>
-                                        <materialDesign:PackIcon
-                                            Padding="8"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Stretch"
-                                            Kind="Refresh" />
-                                        <TextBlock Margin="16,0,0,0" Text="Replay" />
-                                    </DockPanel>
-                                </Button.Content>
-                            </Button>
+
                             <Button
                                 Margin="0,4,0,4"
                                 materialDesign:ButtonAssist.CornerRadius="8"

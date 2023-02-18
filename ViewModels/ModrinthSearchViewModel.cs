@@ -1,5 +1,6 @@
 ﻿using ModManager.Common.Structs;
 using ModManager.Extension;
+using ModManager.Utils;
 using ModManager.Utils.APIs;
 using Prism.Commands;
 using Prism.Events;
@@ -16,11 +17,11 @@ namespace ModManager.ViewModels
         private readonly IEventAggregator aggregator;
         private readonly IRegionManager regionManager;
         private string searchfilter;
-        private string gameversion;
+        private MinecraftGameVersion? gameversion;
         private int classid;
         private string index = "relevance";//默认以相关度排名
         private List<ModrinthModItem> moditems;
-        private List<string> gameversions;
+        private List<MinecraftGameVersion> gameversions;
 
         /// <summary>
         /// 搜索的字符串
@@ -29,7 +30,7 @@ namespace ModManager.ViewModels
         /// <summary>
         /// 游戏版本
         /// </summary>
-        public string GameVersion { get { return gameversion; } set { gameversion = value; RaisePropertyChanged(); } }
+        public MinecraftGameVersion? GameVersion { get { return gameversion; } set { gameversion = value; RaisePropertyChanged(); } }
         /// <summary>
         /// 大类ID
         /// </summary>
@@ -41,7 +42,7 @@ namespace ModManager.ViewModels
         /// <summary>
         /// 游戏版本的列表 在初始化的时候从CurseforgeApi拿数据，获取之前从本地缓存拿数据
         /// </summary>
-        public List<string> GameVersions { get { return gameversions; } private set { gameversions = value; RaisePropertyChanged(); } }
+        public List<MinecraftGameVersion> GameVersions { get { return gameversions; } private set { gameversions = value; RaisePropertyChanged(); } }
         public List<ModrinthModItem> ModItems
         {
             get { return moditems; }
@@ -63,7 +64,7 @@ namespace ModManager.ViewModels
         async void Init() //加载部分数据
         {
             await Task.Run(() => {
-               GameVersions = Api.GetMinecraftVersionList();
+                GameVersions = MinecraftVersionManager.INSTANCE.GetMajorVersion();
             });
         }
         public DelegateCommand<object> SearchCommand { get; private set; }
@@ -76,7 +77,7 @@ namespace ModManager.ViewModels
             ModItems = await Api.SearchMods(searchFilter, Index, null, null);
             aggregator.ShowProgressBar(false);
         }
-        void Reset(object? obj) { searchFilter = ""; GameVersion = ""; classId = 0; Index = "relevance"; }
+        void Reset(object? obj) { searchFilter = ""; GameVersion = null; classId = 0; Index = "relevance"; }
 
         void ViewDetails(object index)
         {

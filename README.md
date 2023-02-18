@@ -1,10 +1,11 @@
-# ModManager
+ï»¿# ModManager
 
-ÕâÊÇÒ»¸öÓÃÓÚÉú³ÉCurseforge ModPackµÄÈí¼ş£¬Ê¹ÓÃC#¿ª·¢£¬Ö§³Ö´ÓModsÎÄ¼ş¼Ğ×Ô¶¯µ¼ÈëÊ¶±ğ¡£
-¸ü¶à¹¦ÄÜÓĞ´ı¿ª·¢¡£
+è¿™æ˜¯ä¸€ä¸ªModç®¡ç†å™¨ï¼Œä½¿ç”¨C#å¼€å‘ï¼ŒåŸºäº.NET Core 6ã€‚
 
-## ÒıÓÃµÄ¿â
-| ¿â | ¿ªÔ´Ğ­Òé |
+æ›´å¤šåŠŸèƒ½æœ‰å¾…å¼€å‘ã€‚
+
+## å¼•ç”¨çš„åº“
+| åº“ | å¼€æºåè®® |
 | :----: | :----: |
 | MaterialDesignThemes | MIT |
 | Microsoft-WindowsAPICodePack-Shell | [Custom License](https://github.com/contre/Windows-API-Code-Pack-1.1/blob/master/LICENSE) |
@@ -13,5 +14,7 @@
 | Prism.Wpf | MIT |
 
 
-## ·Ö·¢Ğí¿ÉÖ¤
+## å¼€æºè®¸å¯è¯
 GNU General Public License v3.0
+
+Copyright Â© 2023 Forgot-Dream

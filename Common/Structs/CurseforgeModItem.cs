@@ -51,7 +51,7 @@ namespace ModManager.Common.Structs
         /// <summary>
         /// 支持的游戏版本
         /// </summary>
-        private List<int> SupportedGameVersions = new();
+        private List<string> SupportedGameVersions = new();
 
         /// <summary>
         /// 用于绑定的加载器字符串
@@ -85,27 +85,7 @@ namespace ModManager.Common.Structs
         {
             get
             {
-                int lastversion = 0;
-                int version;
-                StringBuilder supportversion = new();
-                for (version = 1; version < SupportedGameVersions.Count; version++)
-                {
-                    if (SupportedGameVersions[version] - SupportedGameVersions[version - 1] > 1)
-                    {
-                        if (lastversion == version - 1)
-                        {
-                            supportversion.Append($"| 1.{SupportedGameVersions[lastversion]} ");
-                        }
-                        else
-                        {
-                            supportversion.Append($"| 1.{SupportedGameVersions[lastversion]}-1.{SupportedGameVersions[version - 1]} ");
-                        }
-                        lastversion = version;
-                    }
-                }
-                if (lastversion != version)
-                    supportversion.Append($"| 1.{SupportedGameVersions[lastversion]}-1.{SupportedGameVersions[version - 1]} |");
-                return supportversion.ToString();
+                return MinecraftVersionManager.INSTANCE.GetSupportedVersionAsString(SupportedGameVersions);
             }
         }
 
@@ -123,20 +103,18 @@ namespace ModManager.Common.Structs
 
             foreach (var file in jToken["latestFilesIndexes"])
             {
-                var gameversion = int.Parse(file["gameVersion"].Value<string>().Split('.')[1]);
+                var gameversion = file["gameVersion"].Value<string>();
+                if (!item.SupportedGameVersions.Contains(gameversion))
+                    item.SupportedGameVersions.Add(gameversion);
+
                 if (!file["modLoader"].IsNullOrEmpty())
                 {
                     var loadertype = file["modLoader"].Value<int>();
                     if (!item.ModLoaderTypes.Contains(loadertype))
                         item.ModLoaderTypes.Add(loadertype);
                 }
-                if (!item.SupportedGameVersions.Contains(gameversion))
-                    item.SupportedGameVersions.Add(gameversion);
             }
-
-            item.SupportedGameVersions.Sort();
             item.ModLoaderTypes.Sort();
-
             return item;
         }
         /// <summary>
@@ -194,6 +172,9 @@ namespace ModManager.Common.Structs
             authors = new();
         }
 
+        /// <summary>
+        /// 获取Icon
+        /// </summary>
         private async void AcquireIcon()
         {
             if (IconURL == null)

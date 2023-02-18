@@ -5,25 +5,25 @@ using Prism.Regions;
 
 namespace ModManager.ViewModels
 {
-    public class CurseforgeModViewModel:BindableBase,INavigationAware
+    public class ModrinthModViewModel : BindableBase, INavigationAware
     {
         private readonly IRegionManager regionManager;
 
-		private CurseforgeModItem moditem;
-		/// <summary>
-		/// 引用的CurseforgeMod实例
-		/// </summary>
-		public CurseforgeModItem ModItem
-		{
-			get { return moditem; }
-			set { moditem = value; RaisePropertyChanged(); }
-		}
+        private ModrinthModItem moditem;
+        /// <summary>
+        /// 引用的ModrinthMod实例
+        /// </summary>
+        public ModrinthModItem ModItem
+        {
+            get { return moditem; }
+            set { moditem = value; RaisePropertyChanged(); }
+        }
 
         /// <summary>
         /// 返回命令
         /// </summary>
         public DelegateCommand<object> BackCommand { get; private set; }
-        CurseforgeModViewModel(IRegionManager regionManager)
+        ModrinthModViewModel(IRegionManager regionManager)
         {
             this.regionManager = regionManager;
             BackCommand = new DelegateCommand<object>(Back);
@@ -31,7 +31,7 @@ namespace ModManager.ViewModels
 
         void Back(object sender)
         {
-            regionManager.RequestNavigate("MainViewRegion", "CurseforgeSearchView");
+            regionManager.RequestNavigate("MainViewRegion", "ModrinthSearchView");
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -47,14 +47,14 @@ namespace ModManager.ViewModels
         {
             if (navigationContext.Parameters.ContainsKey("ModItem"))
             {
-                var item = navigationContext.Parameters.GetValue<CurseforgeModItem>("ModItem");
+                var item = navigationContext.Parameters.GetValue<ModrinthModItem>("ModItem");
                 if (item != null)
                 {
                     item.AcquireFileInfo();
                     ModItem = item;
                 }
             }
-                
+
         }
     }
 }

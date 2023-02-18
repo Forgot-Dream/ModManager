@@ -40,6 +40,7 @@ namespace ModManager
 
             //Modrinth界面注册
             containerRegistry.RegisterForNavigation<ModrinthSearchView, ModrinthSearchViewModel>();
+            containerRegistry.RegisterForNavigation<ModrinthModView, ModrinthModViewModel>();
 
             containerRegistry.RegisterForNavigation<ProgressView>();
         }

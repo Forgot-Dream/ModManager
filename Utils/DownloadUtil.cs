@@ -24,10 +24,8 @@ namespace ModManager.Utils
                     response.EnsureSuccessStatusCode();
                     using (var fs = File.Open(tmp, FileMode.Create))
                     {
-                        using (var ms = await response.Content.ReadAsStreamAsync())
-                        {
-                            await ms.CopyToAsync(fs);
-                        }
+                        using var ms = await response.Content.ReadAsStreamAsync();
+                        await ms.CopyToAsync(fs);
                     }
                     File.Move(tmp, save);
                 }

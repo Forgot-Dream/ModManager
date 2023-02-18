@@ -73,13 +73,13 @@ namespace ModManager.Utils.APIs
         /// 从Modrinth查询MC的版本号
         /// </summary>
         /// <returns>MC版本号的列表</returns>
-        public List<string> GetMinecraftVersionList()
+        public List<MinecraftGameVersion> GetMinecraftVersionList()
         {
 
             var reply = APIGet("/v2/tag/game_version", null);
-            List<string> retlist = new();
+            List<MinecraftGameVersion> retlist = new();
             foreach (var version in reply)
-                retlist.Add(version["version"].Value<string>());
+                retlist.Add(new MinecraftGameVersion() { date = DateTime.Parse(version["date"].Value<string>()),version = version["version"].Value<string?>(),version_type = version["version_type"].Value<string?>(),major = version["major"].Value<bool>() });
             return retlist;
         }
 

@@ -1,7 +1,12 @@
-﻿using ModManager.Utils.APIs;
+﻿using ImTools;
+using ModManager.Utils;
+using ModManager.Utils.APIs;
 using Newtonsoft.Json.Linq;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace ModManager.Common.Structs
 {
@@ -25,6 +30,8 @@ namespace ModManager.Common.Structs
             return item;
         }
 
+        public string SupportedVersion => MinecraftVersionManager.INSTANCE.GetSupportedVersionAsString(ModInfo.SupportedVersion);
+
         /// <summary>
         /// 要求文件信息
         /// </summary>
@@ -33,7 +40,7 @@ namespace ModManager.Common.Structs
             FileInfos = ModrinthAPI.API().GetModVersions(ModInfo.ID);
         }
     }
-    public class ModrinthModInfo
+    public class ModrinthModInfo : BindableBase
     {
         /// <summary>
         /// 从Json反序列化Modrinth的Mod基础信息
@@ -47,12 +54,34 @@ namespace ModManager.Common.Structs
                 Author = jToken["author"].Value<string?>(),
                 DateModified = DateTime.Parse(jToken["date_modified"].Value<string?>()),
                 Description = jToken["description"].Value<string?>(),
+                DownloadCount = jToken["downloads"].Value<int>(),
                 IconUrl = jToken["icon_url"].Value<string?>(),
                 ID = jToken["project_id"].Value<string?>(),
                 Slug = jToken["slug"].Value<string?>(),
                 Title = jToken["title"].Value<string?>(),
+                SupportedVersion = jToken["versions"].Values<string>().ToList()
             };
             return info;
+        }
+
+
+        /// <summary>
+        /// 获取Icon
+        /// </summary>
+        private async void AcquireIcon()
+        {
+            if (IconUrl == null)
+                return;
+            var path = System.Environment.CurrentDirectory + $"/caches/modrinth/{ID}.png";
+            if (System.IO.File.Exists(path))
+            {
+                IconPath = path;
+                return;
+            }
+            DirectoryInfo directoryInfo = new(System.Environment.CurrentDirectory);
+            directoryInfo.CreateSubdirectory("caches/modrinth");
+            _ = await DownloadUtil.DownloadFromURL(IconUrl, path);
+            IconPath = path;
         }
 
         private string? slug;
@@ -116,6 +145,21 @@ namespace ModManager.Common.Structs
             set { iconurl = value; }
         }
 
+        private string? iconpath;
+        /// <summary>
+        /// 图标文件的本地地址
+        /// </summary>
+        public string? IconPath
+        {
+            get
+            {
+                if (iconpath == null) { AcquireIcon(); }
+                return iconpath;
+            }
+            private set { iconpath = value; RaisePropertyChanged(); }
+        }
+
+
         private DateTime datemodified;
         /// <summary>
         /// 修改时间
@@ -124,6 +168,26 @@ namespace ModManager.Common.Structs
         {
             get { return datemodified; }
             set { datemodified = value; }
+        }
+
+        private int downloadcount;
+        /// <summary>
+        /// 下载次数统计
+        /// </summary>
+        public int DownloadCount
+        {
+            get { return downloadcount; }
+            set { downloadcount = value; }
+        }
+
+        private List<string?> supportedversion;
+        /// <summary>
+        /// 支持的MC版本
+        /// </summary>
+        public List<string?> SupportedVersion
+        {
+            get { return supportedversion; }
+            set { supportedversion = value; }
         }
 
 

@@ -50,7 +50,7 @@ namespace ModManager.Utils.APIs
         /// <param name="sortOrder">搜索结果的正反顺序 true=正序 false=反序</param>
         /// <param name="sortField">排序方式 1=Featured 2=Popularity 3=LastUpdated 4=Name 5=Author 6=TotalDownloads 7=Category 8=GameVersion</param>
         /// <returns>一个带有查询结果的列表</returns>
-        public async Task<List<CurseforgeModItem>> SearchMods(string? GameVersion, int index, string searchFilter, int sortField, bool sortOrder = false, int ModLoaderType = 0, int classId = 6)
+        public async Task<List<CurseforgeModItem>> SearchMods(MinecraftGameVersion? GameVersion, int index, string? searchFilter, int sortField, bool sortOrder = false, int ModLoaderType = 0, int classId = 6)
         {
             return await Task.Run(() =>
             {
@@ -67,7 +67,7 @@ namespace ModManager.Utils.APIs
                 if (ModLoaderType != 0)
                     Params.Add("modLoaderType", ModLoaderType.ToString());
                 if (GameVersion != null)
-                    Params.Add("gameVersion", GameVersion);
+                    Params.Add("gameVersion", GameVersion.version);
                 var reply = APIGet("/v1/mods/search", Params);
                 List<CurseforgeModItem> modItems = new();
                 foreach (var item in reply["data"])
@@ -107,13 +107,15 @@ namespace ModManager.Utils.APIs
         /// 从Curseforge查询MC的版本号
         /// </summary>
         /// <returns>MC版本号的列表</returns>
-        public List<string> GetMinecraftVersionList()
+        public List<MinecraftGameVersion> GetMinecraftVersionList()
         {
 
             var reply = APIGet("/v1/minecraft/version", null);
-            List<string> retlist = new();
+            List<MinecraftGameVersion> retlist = new();
             foreach (var version in reply["data"])
-                retlist.Add(version["versionString"].Value<string>());
+            {
+                retlist.Add(new MinecraftGameVersion() { date = DateTime.Parse(version["dateModified"].Value<string?>()), version = version["versionString"].Value<string?>(), version_type = "release", major = true });
+            }
             return retlist;
         }
         /// <summary>

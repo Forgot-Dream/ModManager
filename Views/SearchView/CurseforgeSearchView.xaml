@@ -74,6 +74,7 @@
                         materialDesign:TextFieldAssist.HasClearButton="True"
                         IsEditable="True"
                         ItemsSource="{Binding GameVersions}"
+                        DisplayMemberPath="version"
                         SelectedValue="{Binding GameVersion}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     <ComboBox
