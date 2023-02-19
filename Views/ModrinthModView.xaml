@@ -17,7 +17,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-            <RowDefinition Height="110" />
+            <RowDefinition Height="auto" />
             <RowDefinition MaxHeight="600" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" LastChildFill="False">
@@ -49,26 +49,44 @@
                     <ColumnDefinition Width="1000" />
                     <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
+                <Border
+                    Grid.Column="0"
+                    Width="77"
+                    Height="77"
+                    Background="#DCDCDC"
+                    CornerRadius="10"
+                    Opacity="0.5" />
                 <Image
                     Grid.Column="0"
                     Margin="4"
-                    Source="{Binding ModItem.ModInfo.IconPath}" />
+                    Source="{Binding ModItem.ModInfo.IconPath}">
+                    <Image.Clip>
+                        <RectangleGeometry
+                            RadiusX="10"
+                            RadiusY="10"
+                            Rect="0,0,77,77" />
+                    </Image.Clip>
+                </Image>
                 <Grid Grid.Column="1" Margin="4,8,0,8">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="28" />
+                        <RowDefinition Height="35" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="28" />
                     </Grid.RowDefinitions>
                     <DockPanel
                         Grid.Row="0"
                         Margin="4,4,4,4"
+                        VerticalAlignment="Center"
                         LastChildFill="False">
                         <TextBlock
-                            Margin="0,0,4,0"
-                            FontSize="15"
+                            Margin="4,0"
+                            FontSize="20"
                             FontWeight="Bold"
                             Text="{Binding ModItem.ModInfo.Title}" />
-                        <TextBlock FontSize="15" Text="{Binding ModItem.ModInfo.Author}" />
+                        <TextBlock
+                            Margin="2"
+                            FontSize="15"
+                            Text="{Binding ModItem.ModInfo.Author, StringFormat=by {0}}" />
                         <ListBox />
                     </DockPanel>
                     <DockPanel
@@ -76,11 +94,6 @@
                         Margin="0,4,0,0"
                         VerticalAlignment="Center"
                         LastChildFill="False">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="15"
-                            Foreground="#FF969696"
-                            Text="{Binding ModItem.SupportedModLoader}" />
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="15"
@@ -113,15 +126,13 @@
             Grid.Row="2"
             Margin="4,0,4,4"
             Padding="0,8,4,8">
-            <TreeView
+            <ListBox
                 Grid.Row="2"
                 materialDesign:TreeViewAssist.ShowSelection="False"
-                ItemsSource="{Binding ModItem.FileInfos}">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type structs:Version2FileInfo}" ItemsSource="{Binding FileInfos}">
-                        <TextBlock Margin="3,2" Text="{Binding GameVersion}" />
-                    </HierarchicalDataTemplate>
-                    <DataTemplate DataType="{x:Type structs:CurseforgeModFileInfo}">
+                ItemsSource="{Binding ModItem.FileInfos}"
+                Style="{StaticResource MaterialDesignNavigationListBox}">
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type structs:ModrinthModFileInfo}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40" />
@@ -130,14 +141,12 @@
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" />
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding DisplayName}" />
-                                <TextBlock Text="{Binding FileDate, StringFormat=最近更新时间 {0:yyyy-MM-dd HH:mm:ss}}" />
-                                <TextBlock Text="{Binding GameVersion}" />
+                                <TextBlock Text="{Binding Name}" />
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
-                </TreeView.Resources>
-            </TreeView>
+                </ListBox.Resources>
+            </ListBox>
         </materialDesign:Card>
 
     </Grid>

@@ -36,6 +36,11 @@ namespace ModManager.Utils
             GameVersions ??= CurseforgeAPI.API().GetMinecraftVersionList();
             MajorGameVersions = GameVersions.Where(version => version.version_type == "release").ToList();
         }
+
+        /// <summary>
+        /// 获取主要版本
+        /// </summary>
+        /// <returns>主要版本的列表</returns>
         public List<MinecraftGameVersion> GetMajorVersion()
         {
             return MajorGameVersions;
@@ -65,7 +70,7 @@ namespace ModManager.Utils
             StringBuilder supportversion = new();
             for (version = 1; version < sortedversion.Count; version++)
             {
-                if ( sortedversion[version - 1].Key - sortedversion[version].Key > 1)
+                if (sortedversion[version - 1].Key - sortedversion[version].Key > 1)
                 {
                     if (lastversion == version - 1)
                     {
@@ -78,7 +83,7 @@ namespace ModManager.Utils
                     lastversion = version;
                 }
             }
-            if (lastversion != version)
+            if (lastversion != version && sortedversion.Count > 0)
                 supportversion.Append($"| {sortedversion[lastversion].Value}-{sortedversion[version - 1].Value} |");
             return supportversion.ToString();
 

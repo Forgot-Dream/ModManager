@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ModManager.Utils
@@ -14,6 +11,7 @@ namespace ModManager.Utils
         {
             if (!File.Exists(save))
             {
+                Debug.WriteLine($"Download : {url}");
                 var http = new HttpClient();
                 var tmp = save + ".tmp";
                 var request = new HttpRequestMessage(HttpMethod.Get, url);

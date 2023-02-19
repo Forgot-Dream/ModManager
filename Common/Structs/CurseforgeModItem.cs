@@ -177,7 +177,7 @@ namespace ModManager.Common.Structs
         /// </summary>
         private async void AcquireIcon()
         {
-            if (IconURL == null)
+            if (string.IsNullOrEmpty(IconURL))
                 return;
             var path = System.Environment.CurrentDirectory + $"/caches/curseforge/{ID}.png";
             if (System.IO.File.Exists(path))
@@ -209,7 +209,7 @@ namespace ModManager.Common.Structs
             {
                 var ret = "";
                 foreach (var author in Authors)
-                    ret += " | " + author;
+                    ret += " " + author;
                 return ret;
             }
         }
@@ -273,7 +273,7 @@ namespace ModManager.Common.Structs
             set { iconurl = value; }
         }
 
-        private string? iconpath;
+        private string? iconpath = "/Assets/defaulticon.png";
         /// <summary>
         /// 图标缓存之后的本地路径
         /// </summary>
@@ -281,7 +281,9 @@ namespace ModManager.Common.Structs
         {
             get
             {
-                if (iconpath == null) { AcquireIcon(); }
+                if (IconURL == null)
+                    return iconpath;
+                if (iconpath == "/Assets/defaulticon.png") { AcquireIcon(); }
                 return iconpath;
             }
             private set { iconpath = value; RaisePropertyChanged(); }

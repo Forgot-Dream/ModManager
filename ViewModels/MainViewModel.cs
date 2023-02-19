@@ -18,11 +18,11 @@ namespace ModManager.ViewModels
 
         public MainViewModel(IRegionManager regionManager, IEventAggregator aggregator, IDialogHostService dialogHostService)
         {
-            MenuBars = new ObservableCollection<MenuBar>();
+            Projects = new ObservableCollection<ProjectItem>();
             this.regionManager = regionManager;
             this.aggregator = aggregator;
             this.dialogHostService = dialogHostService;
-            NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
+            NavigateCommand = new DelegateCommand<ProjectItem>(Navigate);
             ChangeViewCommand = new DelegateCommand<string>(ChangeView);
             aggregator.GetEvent<MessageEvent>().Subscribe(MessageDialogOpen);
         }
@@ -36,32 +36,30 @@ namespace ModManager.ViewModels
             dialogHostService.ShowDialog("MessageView", param);
         }
 
-        private ObservableCollection<MenuBar> menuBars;
-        public DelegateCommand<MenuBar> NavigateCommand { get; private set; }
+        private ObservableCollection<ProjectItem> projects;
+        public DelegateCommand<ProjectItem> NavigateCommand { get; private set; }
         public DelegateCommand<string> ChangeViewCommand { get; private set; }
 
         private void ChangeView(string obj)
         {
-            if (obj == null || string.IsNullOrEmpty(obj))
+            if (string.IsNullOrEmpty(obj))
                 return;
             regionManager.Regions["MainViewRegion"].RequestNavigate(obj);
         }
-        private void Navigate(MenuBar obj)
+        private void Navigate(ProjectItem obj)
         {
-            if (obj == null || string.IsNullOrWhiteSpace(obj.Name_Space))
-                return;
-            regionManager.Regions["MainViewRegion"].RequestNavigate(obj.Name_Space);
+            //regionManager.Regions["MainViewRegion"].RequestNavigate(obj.Name_Space);
         }
 
-        public ObservableCollection<MenuBar> MenuBars
+        public ObservableCollection<ProjectItem> Projects
         {
-            get { return menuBars; }
-            set { menuBars = value; RaisePropertyChanged(); }
+            get { return projects; }
+            set { projects = value; RaisePropertyChanged(); }
         }
 
         void CreateMenu()
         {
-            MenuBars.Add(new MenuBar() { Icon = "Download", Name = "Test", Name_Space = "SearchView" });
+            Projects.Add(new ProjectItem() { Name = "TEST" });
         }
 
         public void Configure()

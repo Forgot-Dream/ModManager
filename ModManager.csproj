@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\clientside.png" />
+    <None Remove="Assets\client_side.png" />
+    <None Remove="Assets\defaulticon.png" />
+    <None Remove="Assets\server_side.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -16,7 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\client_side.png" />
+    <Resource Include="Assets\defaulticon.png" />
     <Resource Include="Assets\icon.PNG" />
+    <Resource Include="Assets\server_side.png" />
   </ItemGroup>
 
 </Project>

@@ -8,6 +8,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
+    xmlns:structs="[structs ]clr-namespace:ModManager.Common.Structs"
     xmlns:viewmodels="clr-namespace:ModManager.ViewModels"
     Title="ModManager-v1.0.0-SHANPOST"
     Width="1300"
@@ -53,14 +54,14 @@
                                 materialDesign:ButtonAssist.CornerRadius="8"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
-                                    <DockPanel>
+                                    <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon
                                             Padding="8"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Stretch"
                                             Kind="Download" />
                                         <TextBlock Margin="16,0,0,0" Text="下载器" />
-                                    </DockPanel>
+                                    </StackPanel>
                                 </Button.Content>
                             </Button>
                         </StackPanel>
@@ -82,14 +83,14 @@
                                 CommandParameter="CurseforgeSearchView"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
-                                    <DockPanel>
+                                    <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon
                                             Padding="8"
-                                            HorizontalAlignment="Center"
+                                            HorizontalAlignment="Left"
                                             VerticalAlignment="Stretch"
                                             Kind="Anvil" />
                                         <TextBlock Margin="16,0,0,0" Text="Curseforge" />
-                                    </DockPanel>
+                                    </StackPanel>
                                 </Button.Content>
                             </Button>
                             <Button
@@ -99,29 +100,14 @@
                                 CommandParameter="ModrinthSearchView"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
-                                    <DockPanel>
+                                    <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon
                                             Padding="8"
-                                            HorizontalAlignment="Center"
+                                            HorizontalAlignment="Left"
                                             VerticalAlignment="Stretch"
                                             Kind="Download" />
                                         <TextBlock Margin="16,0,0,0" Text="Modrinth" />
-                                    </DockPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button
-                                Margin="0,4,0,4"
-                                materialDesign:ButtonAssist.CornerRadius="8"
-                                Style="{StaticResource MaterialDesignOutlinedDarkButton}">
-                                <Button.Content>
-                                    <DockPanel>
-                                        <materialDesign:PackIcon
-                                            Padding="8"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Stretch"
-                                            Kind="AlphaFBoxOutline" />
-                                        <TextBlock Margin="16,0,0,0" Text="Optifine" />
-                                    </DockPanel>
+                                    </StackPanel>
                                 </Button.Content>
                             </Button>
 
@@ -130,14 +116,14 @@
                                 materialDesign:ButtonAssist.CornerRadius="8"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
-                                    <DockPanel>
+                                    <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon
                                             Padding="8"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Stretch"
                                             Kind="Github" />
                                         <TextBlock Margin="16,0,0,0" Text="Github" />
-                                    </DockPanel>
+                                    </StackPanel>
                                 </Button.Content>
                             </Button>
                         </StackPanel>
@@ -158,63 +144,106 @@
                                 materialDesign:ButtonAssist.CornerRadius="8"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
-                                    <DockPanel>
+                                    <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon
                                             Padding="8"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Stretch"
                                             Kind="Settings" />
                                         <TextBlock Margin="16,0,0,0" Text="设置" />
-                                    </DockPanel>
+                                    </StackPanel>
                                 </Button.Content>
                             </Button>
                             <Button
                                 Margin="0,4,0,4"
                                 materialDesign:ButtonAssist.CornerRadius="8"
+                                Command="{Binding ChangeViewCommand}"
+                                CommandParameter="AboutView"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
-                                    <DockPanel>
+                                    <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon
                                             Padding="8"
-                                            HorizontalAlignment="Center"
+                                            HorizontalAlignment="Stretch"
                                             VerticalAlignment="Stretch"
                                             Kind="AlphaIBoxOutline" />
                                         <TextBlock Margin="16,0,0,0" Text="关于" />
-                                    </DockPanel>
+                                    </StackPanel>
                                 </Button.Content>
                             </Button>
+                        </StackPanel>
+                    </materialDesign:Card>
+                    <materialDesign:Card
+                        Grid.Row="1"
+                        Width="auto"
+                        Margin="4,4,4,4"
+                        Padding="0"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                        Background="#03a9f4"
+                        Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                        UniformCornerRadius="6">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="12,12,0,12" Text="项目 ————————  " />
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Padding="0"
+                                    materialDesign:ButtonAssist.CornerRadius="8"
+                                    Style="{StaticResource MaterialDesignOutlinedDarkButton}">
+                                    <Button.Content>
+                                        <materialDesign:PackIcon
+                                            Width="20"
+                                            Height="20"
+                                            Kind="Add" />
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+
+                            <ListBox
+                                x:Name="ProjectList"
+                                Grid.Row="1"
+                                MinHeight="310"
+                                Margin="0,0,4,0"
+                                ItemsSource="{Binding Projects}"
+                                Style="{StaticResource MaterialDesignNavigationListBox}">
+                                <behaviors:Interaction.Triggers>
+                                    <behaviors:EventTrigger EventName="SelectionChanged">
+                                        <behaviors:InvokeCommandAction Command="{Binding NavigateCommand}" CommandParameter="{Binding ElementName=ProjectList, Path=SelectedItem}" />
+                                        <behaviors:ChangePropertyAction
+                                            PropertyName="SelectedIndex"
+                                            TargetObject="{Binding ElementName=ProjectList}"
+                                            Value="-1" />
+                                    </behaviors:EventTrigger>
+                                </behaviors:Interaction.Triggers>
+                                <ListBox.Resources>
+                                    <Style BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" TargetType="ScrollBar" />
+                                </ListBox.Resources>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="structs:ProjectItem">
+                                        <Grid MinWidth="155">
+                                            <Border
+                                                BorderBrush="{DynamicResource MaterialDesignDarkBackground}"
+                                                BorderThickness="1"
+                                                CornerRadius="5" />
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon Margin="15,9" Kind="{Binding Icon}" />
+                                                <TextBlock
+                                                    Margin="24,5,5,5"
+                                                    FontFamily="Microsoft YaHei"
+                                                    FontSize="16"
+                                                    Text="{Binding Name}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </StackPanel>
                     </materialDesign:Card>
 
 
                 </StackPanel>
-                <ListBox
-                    x:Name="MenuBar"
-                    Grid.Row="1"
-                    Margin="0,16,0,16"
-                    ItemsSource="{Binding MenuBars}"
-                    Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
-                    <behaviors:Interaction.Triggers>
-                        <behaviors:EventTrigger EventName="SelectionChanged">
-                            <behaviors:InvokeCommandAction Command="{Binding NavigateCommand}" CommandParameter="{Binding ElementName=MenuBar, Path=SelectedItem}" />
-                        </behaviors:EventTrigger>
-                    </behaviors:Interaction.Triggers>
-                    <ListBox.Resources>
-                        <Style BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" TargetType="ScrollBar" />
-                    </ListBox.Resources>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="domain:DemoItem">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Margin="15,9" Kind="{Binding Icon}" />
-                                <TextBlock
-                                    Margin="24,5,5,5"
-                                    FontFamily="Microsoft YaHei"
-                                    FontSize="16"
-                                    Text="{Binding Name}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+
             </Grid>
 
             <ContentControl Grid.Column="1" prism:RegionManager.RegionName="MainViewRegion" />

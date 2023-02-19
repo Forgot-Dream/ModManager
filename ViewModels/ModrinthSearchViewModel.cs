@@ -87,7 +87,7 @@ namespace ModManager.ViewModels
             {
                 { "ModItem", ModItems[(int)index] }
             };
-            regionManager.RequestNavigate("MainViewRegion", "ModrinthSearchView", param);
+            regionManager.RequestNavigate("MainViewRegion", "ModrinthModView", param);
         }
     }
 }

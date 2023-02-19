@@ -1,5 +1,4 @@
-﻿using ImTools;
-using ModManager.Utils;
+﻿using ModManager.Utils;
 using ModManager.Utils.APIs;
 using Newtonsoft.Json.Linq;
 using Prism.Mvvm;
@@ -61,6 +60,31 @@ namespace ModManager.Common.Structs
                 Title = jToken["title"].Value<string?>(),
                 SupportedVersion = jToken["versions"].Values<string>().ToList()
             };
+            //写入server / client的需求数据
+            switch (jToken["client_side"].Value<string>())
+            {
+                case "required":
+                    info.ClientSide = "必需";
+                    break;
+                case "optional":
+                    info.ClientSide = "可选";
+                    break;
+                case "unsupported":
+                    info.ClientSide = "不支持";
+                    break;
+            }
+            switch (jToken["server_side"].Value<string>())
+            {
+                case "required":
+                    info.ServerSide = "必需";
+                    break;
+                case "optional":
+                    info.ServerSide = "可选";
+                    break;
+                case "unsupported":
+                    info.ServerSide = "不支持";
+                    break;
+            }
             return info;
         }
 
@@ -70,7 +94,7 @@ namespace ModManager.Common.Structs
         /// </summary>
         private async void AcquireIcon()
         {
-            if (IconUrl == null)
+            if (string.IsNullOrEmpty(IconUrl))
                 return;
             var path = System.Environment.CurrentDirectory + $"/caches/modrinth/{ID}.png";
             if (System.IO.File.Exists(path))
@@ -145,7 +169,7 @@ namespace ModManager.Common.Structs
             set { iconurl = value; }
         }
 
-        private string? iconpath;
+        private string? iconpath = "/Assets/defaulticon.png";
         /// <summary>
         /// 图标文件的本地地址
         /// </summary>
@@ -153,7 +177,9 @@ namespace ModManager.Common.Structs
         {
             get
             {
-                if (iconpath == null) { AcquireIcon(); }
+                if (IconUrl == null)
+                    return iconpath;
+                if (iconpath == "/Assets/defaulticon.png") { AcquireIcon(); }
                 return iconpath;
             }
             private set { iconpath = value; RaisePropertyChanged(); }
@@ -190,6 +216,26 @@ namespace ModManager.Common.Structs
             set { supportedversion = value; }
         }
 
+        private string? serverside;
+        /// <summary>
+        /// 服务器侧支持情况 -1=不支持 0=可选 1=必需
+        /// </summary>
+        public string? ServerSide
+        {
+            get { return serverside; }
+            set { serverside = value; }
+        }
+
+        private string? clientside;
+        /// <summary>
+        /// 客户端侧支持情况 -1=不支持 0=可选 1=必需
+        /// </summary>
+        public string? ClientSide
+        {
+            get { return clientside; }
+            set { clientside = value; }
+        }
+
 
     }
     public class ModrinthModFileInfo
@@ -204,9 +250,9 @@ namespace ModManager.Common.Structs
             ModrinthModFileInfo info = new()
             {
                 DatePublished = DateTime.Parse(jToken["date_published"].Value<string>()),
-                DownloadUrl = jToken["files"]["url"].Value<string>(),
+                DownloadUrl = jToken["files"][0]["url"].Value<string>(),
                 FileID = jToken["id"].Value<string>(),
-                FileName = jToken["files"]["filename"].Value<string>(),
+                FileName = jToken["files"][0]["filename"].Value<string>(),
                 Name = jToken["name"].Value<string>(),
                 VersionType = jToken["version_type"].Value<string>()
             };

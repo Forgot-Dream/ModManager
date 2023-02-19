@@ -72,9 +72,9 @@
                         materialDesign:HintAssist.Background="#DCE2F1"
                         materialDesign:HintAssist.Hint="游戏版本"
                         materialDesign:TextFieldAssist.HasClearButton="True"
+                        DisplayMemberPath="version"
                         IsEditable="True"
                         ItemsSource="{Binding GameVersions}"
-                        DisplayMemberPath="version"
                         SelectedValue="{Binding GameVersion}"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     <ComboBox
@@ -128,72 +128,102 @@
                         <behaviors:InvokeCommandAction Command="{Binding ViewDetailsCommand}" CommandParameter="{Binding ElementName=CurseforgeModItemList, Path=SelectedIndex}" />
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
+                <ListBox.Resources>
+                    <Style BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" TargetType="ScrollBar" />
+                </ListBox.Resources>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="structs:CurseforgeModItem">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80" />
-                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="785"/>
+                                <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
-                            <Image
-                                Grid.Column="0"
+                            <Grid Grid.Column="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="85" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                Margin="0,3,4,3"
+                                Background="#d4c4b7"
+                                CornerRadius="3" />
+                                <Border
+                                Grid.Column="1"
+                                Width="77"
+                                Height="77"
+                                Background="#DCDCDC"
+                                CornerRadius="10"
+                                Opacity="0.5" />
+                                <Image
+                                Grid.Column="1"
                                 Margin="4"
-                                Source="{Binding ModInfo.IconPath}" />
-                            <Grid Grid.Column="1" Margin="4,0,0,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="25" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="25" />
-                                </Grid.RowDefinitions>
-                                <DockPanel
+                                Source="{Binding ModInfo.IconPath}">
+                                    <Image.Clip>
+                                        <RectangleGeometry
+                                        RadiusX="10"
+                                        RadiusY="10"
+                                        Rect="0,0,77,77" />
+                                    </Image.Clip>
+                                </Image>
+                                <Grid Grid.Column="2" Margin="4,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="25" />
+                                    </Grid.RowDefinitions>
+                                    <DockPanel
                                     Grid.Row="0"
                                     Margin="0,4,0,0"
                                     LastChildFill="False">
-                                    <TextBlock
-                                        Margin="0,0,4,0"
-                                        FontSize="15"
+                                        <TextBlock
+                                        Margin="0,0,8,0"
+                                        FontSize="20"
                                         FontWeight="Bold"
                                         Text="{Binding ModInfo.Name}" />
-                                    <TextBlock FontSize="15" Text="{Binding ModInfo.Author}" />
-                                    <ListBox />
-                                </DockPanel>
-                                <DockPanel
+                                        <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="15"
+                                        MaxWidth="350"
+                                        TextTrimming="WordEllipsis"
+                                        Text="{Binding ModInfo.Author, StringFormat=by {0}}" />
+                                    </DockPanel>
+                                    <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,4,0,0"
-                                    VerticalAlignment="Center"
-                                    LastChildFill="False">
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        Foreground="#FF969696"
-                                        Text="{Binding SupportedModLoader}" />
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        Foreground="#FF969696"
-                                        Text="{Binding SupportedVersion}" />
-                                    <TextBlock
-                                        Margin="4,0,0,0"
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        Foreground="#FF969696"
-                                        Text="{Binding ModInfo.DownloadCount, StringFormat=总下载数 {0:N0}}" />
-                                    <TextBlock
-                                        Margin="4,0,0,0"
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        Foreground="#FF969696"
-                                        Text="{Binding ModInfo.DateModified, StringFormat=最近更新时间 {0:yyyy-MM-dd HH:mm:ss}}" />
-                                </DockPanel>
-                                <TextBlock
-                                    Grid.Row="2"
                                     Margin="0,6,0,0"
                                     FontSize="15"
                                     Foreground="#FF969696"
                                     Text="{Binding ModInfo.Summary}"
-                                    TextWrapping="Wrap" />
+                                    MaxWidth="600"
+                                    TextWrapping="Wrap"
+                                    HorizontalAlignment="Left"/>
+                                </Grid>
                             </Grid>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                <StackPanel
+                                    Height="20"
+                                    Margin="0,5,0,5"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="20"
+                                        Height="20"
+                                        Kind="Download" />
+                                    <TextBlock FontSize="15" Text="{Binding ModInfo.DownloadCount, StringFormat=下载次数 {0:N0}}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Margin="0,5,0,5"
+                                    VerticalAlignment="Bottom"
+                                    Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="20"
+                                        Height="20"
+                                        Kind="Refresh" />
+                                    <TextBlock FontSize="15" Text="{Binding ModInfo.DateModified, StringFormat=更新于 {0:yyyy-MM-dd HH:mm:ss}}" />
+                                </StackPanel>
+                            </StackPanel>
                         </Grid>
+                        
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

@@ -1,5 +1,5 @@
 ﻿using Prism.Mvvm;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace ModManager.Common.Structs
 {
@@ -17,7 +17,7 @@ namespace ModManager.Common.Structs
 
         private string loadertype;
         /// <summary>
-        /// Mod加载器名称
+        /// Mod加载器类型
         /// </summary>
         public string LoaderType
         {
@@ -55,15 +55,32 @@ namespace ModManager.Common.Structs
             set { folderpath = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<ModItem>? moditems;
+        private List<ProjectInfo>? moditems;
         /// <summary>
         /// 包含Mod实例的存储 Null=未加载
         /// </summary>
-        public ObservableCollection<ModItem>? ModItems
+        public List<ProjectInfo>? ModItems
         {
             get { return moditems; }
             set { moditems = value; RaisePropertyChanged(); }
         }
+
+    }
+
+    public class ProjectInfo
+    {
+        /// <summary>
+        /// Curseforge Mod的ID
+        /// </summary>
+        public int? CurseforgeModID;
+        /// <summary>
+        /// Modrinth Mod的ID
+        /// </summary>
+        public string? ModrinthModID;
+        /// <summary>
+        /// 文件路径
+        /// </summary>
+        public string FilePath;
 
     }
 }
