@@ -16,6 +16,7 @@ namespace ModManager.ViewModels
         private readonly ModrinthAPI Api;
         private readonly IEventAggregator aggregator;
         private readonly IRegionManager regionManager;
+        private int lastcalledindex = -1;
         private string searchfilter;
         private MinecraftGameVersion? gameversion;
         private int classid;
@@ -63,7 +64,8 @@ namespace ModManager.ViewModels
 
         async void Init() //加载部分数据
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 GameVersions = MinecraftVersionManager.INSTANCE.GetMajorVersion();
             });
         }
@@ -79,15 +81,22 @@ namespace ModManager.ViewModels
         }
         void Reset(object? obj) { searchFilter = ""; GameVersion = null; classId = 0; Index = "relevance"; }
 
-        void ViewDetails(object index)
+        async void ViewDetails(object index)
         {
-            if ((int)index == -1)
-                return;
-            var param = new NavigationParameters
+            if (lastcalledindex != (int)index)
+            {
+                aggregator.ShowProgressBar(true);
+                await Task.Run(() => { ModItems[(int)index].AcquireDetailedInfo(); });
+                aggregator.ShowProgressBar(false);
+                var param = new NavigationParameters
             {
                 { "ModItem", ModItems[(int)index] }
             };
-            regionManager.RequestNavigate("MainViewRegion", "ModrinthModView", param);
+                regionManager.RequestNavigate("MainViewRegion", "ModrinthModView", param);
+                lastcalledindex = (int)index;
+                return;
+            }
+            regionManager.Regions["MainViewRegion"].RequestNavigate("ModrinthModView");
         }
     }
 }

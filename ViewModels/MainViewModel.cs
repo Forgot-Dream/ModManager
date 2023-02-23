@@ -48,7 +48,7 @@ namespace ModManager.ViewModels
         }
         private void Navigate(ProjectItem obj)
         {
-            //regionManager.Regions["MainViewRegion"].RequestNavigate(obj.Name_Space);
+            regionManager.Regions["MainViewRegion"].RequestNavigate("ProjectView");
         }
 
         public ObservableCollection<ProjectItem> Projects
@@ -59,7 +59,7 @@ namespace ModManager.ViewModels
 
         void CreateMenu()
         {
-            Projects.Add(new ProjectItem() { Name = "TEST" });
+            Projects.Add(new ProjectItem() { Name = "TEST",LoaderType="fabric" });
         }
 
         public void Configure()

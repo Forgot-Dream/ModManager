@@ -178,9 +178,9 @@
                         Width="auto"
                         Margin="4,4,4,4"
                         Padding="0"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth1"
-                        Background="#03a9f4"
-                        Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                        Background="White"
+                        Foreground="{DynamicResource MaterialDesignLightForeground}"
                         UniformCornerRadius="6">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal">
@@ -223,16 +223,18 @@
                                     <DataTemplate DataType="structs:ProjectItem">
                                         <Grid MinWidth="155">
                                             <Border
-                                                BorderBrush="{DynamicResource MaterialDesignDarkBackground}"
-                                                BorderThickness="1"
+                                                BorderBrush="#d4c4b7"
+                                                BorderThickness="2"
                                                 CornerRadius="5" />
-                                            <StackPanel Orientation="Horizontal">
-                                                <materialDesign:PackIcon Margin="15,9" Kind="{Binding Icon}" />
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Image Margin="9,7,9,7" Source="{Binding Icon}" />
                                                 <TextBlock
-                                                    Margin="24,5,5,5"
+                                                    Margin="0,8,0,0"
                                                     FontFamily="Microsoft YaHei"
                                                     FontSize="16"
-                                                    Text="{Binding Name}" />
+                                                    Foreground="#d4c4b7"
+                                                    Text="{Binding Name}"
+                                                    TextTrimming="CharacterEllipsis"/>
                                             </StackPanel>
                                         </Grid>
                                     </DataTemplate>

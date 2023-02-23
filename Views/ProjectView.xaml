@@ -9,52 +9,28 @@
     xmlns:viewmodels="clr-namespace:ModManager.ViewModels"
     xmlns:structs="clr-namespace:ModManager.Common.Structs"
     d:DataContext="{d:DesignInstance Type=viewmodels:ProjectViewModel}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
     mc:Ignorable="d">
-    <Grid>
+    <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="513*" />
-            <ColumnDefinition Width="287*" />
+            <ColumnDefinition Width="700"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <materialDesign:Card Grid.Row="1" Margin="5,5,5,5">
-            <StackPanel Orientation="Horizontal">
-                <ListView ItemsSource="{Binding Projects}">
-                    <ListView.Resources>
-                        <DataTemplate DataType="{x:Type TypeName=structs:ProjectItem}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                    <TextBlock Text="icon" />
-                                    <TextBlock
-                                        Padding="20,10"
-                                        FontSize="20"
-                                        FontWeight="Bold"
-                                        Text="{Binding Name}"/>
-                                </StackPanel>
-                                <TextBlock Grid.Row="1" Text="{Binding FolderPath}"/>
-                                <StackPanel Orientation="Horizontal" Grid.Row="2">
-                                    <Button Content="删除"/>
-                                    <Button Content="设置"/>
-                                </StackPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.Resources>
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                </ListView>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="650"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <TextBox Grid.Row="0" FontSize="12" materialDesign:HintAssist.Hint="搜索..." Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
+            <ListBox Margin="0,4,0,4" Grid.Row="1">
+                <ListBoxItem>test</ListBoxItem>
+            </ListBox>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Button Content="导入"/>
+                <Button Content="导出"/>
             </StackPanel>
-        </materialDesign:Card>
+        </Grid>
     </Grid>
 </UserControl>

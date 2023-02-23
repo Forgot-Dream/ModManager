@@ -25,6 +25,14 @@ namespace ModManager.Common.Structs
             set { loadertype = value; RaisePropertyChanged(); }
         }
 
+        public string Icon
+        {
+            get
+            {
+                return $"/Assets/{LoaderType}.png";
+            }
+        }
+
         private string loaderversion;
         /// <summary>
         /// Mod加载器版本

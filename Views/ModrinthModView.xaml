@@ -8,6 +8,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="[prism ]http://prismlibrary.com/"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     xmlns:structs="clr-namespace:ModManager.Common.Structs"
     xmlns:viewmodels="clr-namespace:ModManager.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:ModrinthModViewModel}"
@@ -46,8 +47,8 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80" />
-                    <ColumnDefinition Width="1000" />
-                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Border
                     Grid.Column="0"
@@ -67,87 +68,233 @@
                             Rect="0,0,77,77" />
                     </Image.Clip>
                 </Image>
-                <Grid Grid.Column="1" Margin="4,8,0,8">
+                <Grid Grid.Column="1" Margin="8,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="35" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="28" />
+                        <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <DockPanel
                         Grid.Row="0"
-                        Margin="4,4,4,4"
-                        VerticalAlignment="Center"
+                        Margin="0,4,0,0"
                         LastChildFill="False">
                         <TextBlock
-                            Margin="4,0"
+                            Margin="0,0,8,0"
                             FontSize="20"
                             FontWeight="Bold"
                             Text="{Binding ModItem.ModInfo.Title}" />
                         <TextBlock
-                            Margin="2"
+                            VerticalAlignment="Center"
                             FontSize="15"
                             Text="{Binding ModItem.ModInfo.Author, StringFormat=by {0}}" />
-                        <ListBox />
-                    </DockPanel>
-                    <DockPanel
-                        Grid.Row="1"
-                        Margin="0,4,0,0"
-                        VerticalAlignment="Center"
-                        LastChildFill="False">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="15"
-                            Foreground="#FF969696"
-                            Text="{Binding ModItem.SupportedVersion}" />
-                        <TextBlock
-                            Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            FontSize="15"
-                            Foreground="#FF969696"
-                            Text="{Binding ModItem.ModInfo.DownloadCount, StringFormat=总下载数 {0:N0}}" />
-                        <TextBlock
-                            Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            FontSize="15"
-                            Foreground="#FF969696"
-                            Text="{Binding ModItem.ModInfo.DateModified, StringFormat=最近更新时间 {0:yyyy-MM-dd HH:mm:ss}}" />
                     </DockPanel>
                     <TextBlock
-                        Grid.Row="2"
-                        Margin="0,6,0,0"
-                        FontSize="15"
+                        Grid.Row="1"
+                        MaxWidth="750"
+                        Margin="0,2,0,4"
+                        FontSize="14"
                         Foreground="#FF969696"
                         Text="{Binding ModItem.ModInfo.Description}"
                         TextWrapping="Wrap" />
+                    <Grid
+                        Grid.Row="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            Grid.Column="0"
+                            BorderBrush="#FF969696"
+                            BorderThickness="2"
+                            CornerRadius="10"
+                            Opacity="0.5" />
+                        <StackPanel
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Margin="8,2,2,2"
+                                Source="/Assets/server_side.png" />
+                            <TextBlock
+                                Margin="2,2,2,0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Text="{Binding ModItem.ModInfo.ServerSide}" />
+                            <Image
+                                Width="20"
+                                Height="20"
+                                Margin="4,2,2,2"
+                                Source="/Assets/client_side.png" />
+                            <TextBlock
+                                Margin="2,2,8,0"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Text="{Binding ModItem.ModInfo.ClientSide}" />
+
+                        </StackPanel>
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding ModItem.ModInfo.Categorys}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="structs:ModrinthCategory">
+                                    <Grid Margin="4,0,0,0">
+                                        <Border
+                                            Grid.Column="0"
+                                            BorderBrush="#FF969696"
+                                            BorderThickness="2"
+                                            CornerRadius="10"
+                                            Opacity="0.5" />
+                                        <StackPanel Margin="8,4,8,4" Orientation="Horizontal">
+                                            <Image Source="{Binding Icon}" />
+                                            <TextBlock Margin="4,0,4,0" Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
                 </Grid>
+                <StackPanel
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom">
+                    <StackPanel
+                        Height="20"
+                        Margin="0,5,0,5"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                            Width="20"
+                            Height="20"
+                            Kind="Download" />
+                        <TextBlock FontSize="15" Text="{Binding ModItem.ModInfo.DownloadCount, StringFormat=下载次数 {0:N0}}" />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="0,5,0,5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                            Width="20"
+                            Height="20"
+                            Kind="Refresh" />
+                        <TextBlock FontSize="15" Text="{Binding ModItem.ModInfo.DateModified, StringFormat=更新于 {0:yyyy-MM-dd HH:mm:ss}}" />
+                    </StackPanel>
+                </StackPanel>
+
             </Grid>
         </materialDesign:Card>
-        <materialDesign:Card
-            Grid.Row="2"
-            Margin="4,0,4,4"
-            Padding="0,8,4,8">
-            <ListBox
-                Grid.Row="2"
-                materialDesign:TreeViewAssist.ShowSelection="False"
-                ItemsSource="{Binding ModItem.FileInfos}"
-                Style="{StaticResource MaterialDesignNavigationListBox}">
-                <ListBox.Resources>
-                    <DataTemplate DataType="{x:Type structs:ModrinthModFileInfo}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" />
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding Name}" />
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.Resources>
-            </ListBox>
-        </materialDesign:Card>
+        <DockPanel Grid.Row="2" LastChildFill="True">
+            <materialDesign:Card
+                Width="500"
+                Margin="4,0,4,4"
+                Padding="4">
+                <ItemsControl Grid.Column="0" ItemsSource="{Binding ModItem.FileInfos}">
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="ItemsControl">
+                            <ScrollViewer Style="{StaticResource MaterialDesignScrollViewer}">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                    <ItemsControl.Resources>
+
+                        <DataTemplate DataType="{x:Type structs:ModrinthModFileInfo}">
+                            <Grid Margin="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="460" />
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    Grid.Column="0"
+                                    Background="#FF969696"
+                                    CornerRadius="5" />
+                                <Border
+                                    Grid.Column="1"
+                                    Margin="4,0,4,0"
+                                    BorderBrush="#FF969696"
+                                    BorderThickness="1"
+                                    CornerRadius="5" />
+                                <StackPanel Grid.Column="1" Margin="8,4,8,4">
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="DemiBold"
+                                        Text="{Binding Name}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontSize="14" Text="{Binding Loader}" />
+                                        <TextBlock
+                                            Margin="4,0,0,0"
+                                            FontSize="14"
+                                            Text="{Binding GameVersion}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Margin="0,0,4,0"
+                                            FontWeight="DemiBold"
+                                            Text="{Binding VersionType}" />
+                                        <TextBlock Text="{Binding VersionNumber}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Margin="8,4,8,4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        Width="35"
+                                        Height="35"
+                                        Margin="4"
+                                        Padding="0"
+                                        materialDesign:ButtonAssist.CornerRadius="5"
+                                        materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        Style="{StaticResource MaterialDesignPaperLightButton}"
+                                        ToolTip="直接下载">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon
+                                                Width="25"
+                                                Height="25"
+                                                Kind="Download" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button
+                                        Width="35"
+                                        Height="35"
+                                        Margin="4"
+                                        Padding="0"
+                                        materialDesign:ButtonAssist.CornerRadius="5"
+                                        materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        ToolTip="添加到当前打开的项目">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon
+                                                Width="25"
+                                                Height="25"
+                                                Kind="Add" />
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="4" >
+                <Grid>
+                    <wv2:WebView2 x:Name="webview"  />
+
+
+                </Grid>
+            </materialDesign:Card>
+        </DockPanel>
+
 
     </Grid>
 </UserControl>

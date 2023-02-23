@@ -7,26 +7,44 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Assets\clientside.png" />
-    <None Remove="Assets\client_side.png" />
-    <None Remove="Assets\defaulticon.png" />
-    <None Remove="Assets\server_side.png" />
-  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
+    <PackageReference Include="Markdig" Version="0.30.4" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.7.1" />
     <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1587.40" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="Prism.Wpf" Version="8.1.97" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\adventure.png" />
     <Resource Include="Assets\client_side.png" />
+    <Resource Include="Assets\cursed.png" />
+    <Resource Include="Assets\decoration.png" />
     <Resource Include="Assets\defaulticon.png" />
+    <Resource Include="Assets\economy.png" />
+    <Resource Include="Assets\equipment.png" />
+    <Resource Include="Assets\fabric.png" />
+    <Resource Include="Assets\food.png" />
+    <Resource Include="Assets\forge.png" />
+    <Resource Include="Assets\game-mechanics.png" />
     <Resource Include="Assets\icon.PNG" />
+    <Resource Include="Assets\library.png" />
+    <Resource Include="Assets\magic.png" />
+    <Resource Include="Assets\management.png" />
+    <Resource Include="Assets\minigame.png" />
+    <Resource Include="Assets\mobs.png" />
+    <Resource Include="Assets\optimization.png" />
+    <Resource Include="Assets\quilt.png" />
     <Resource Include="Assets\server_side.png" />
+    <Resource Include="Assets\social.png" />
+    <Resource Include="Assets\storage.png" />
+    <Resource Include="Assets\technology.png" />
+    <Resource Include="Assets\transportation.png" />
+    <Resource Include="Assets\utility.png" />
+    <Resource Include="Assets\worldgen.png" />
   </ItemGroup>
 
 </Project>

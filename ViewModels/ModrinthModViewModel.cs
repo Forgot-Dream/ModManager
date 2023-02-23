@@ -1,13 +1,18 @@
-﻿using ModManager.Common.Structs;
+﻿using ModManager.Common.Events;
+using ModManager.Common.Structs;
+using ModManager.Extension;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.Threading.Tasks;
 
 namespace ModManager.ViewModels
 {
     public class ModrinthModViewModel : BindableBase, INavigationAware
     {
         private readonly IRegionManager regionManager;
+        private readonly IEventAggregator aggregator;
 
         private ModrinthModItem moditem;
         /// <summary>
@@ -23,8 +28,9 @@ namespace ModManager.ViewModels
         /// 返回命令
         /// </summary>
         public DelegateCommand<object> BackCommand { get; private set; }
-        ModrinthModViewModel(IRegionManager regionManager)
+        ModrinthModViewModel(IEventAggregator aggregator, IRegionManager regionManager)
         {
+            this.aggregator = aggregator;
             this.regionManager = regionManager;
             BackCommand = new DelegateCommand<object>(Back);
         }
@@ -45,14 +51,16 @@ namespace ModManager.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (navigationContext.Parameters.ContainsKey("ModItem"))
+            if (navigationContext != null && navigationContext.Parameters.ContainsKey("ModItem"))
             {
                 var item = navigationContext.Parameters.GetValue<ModrinthModItem>("ModItem");
-                if (item != null)
+                if (item != null && !item.Equals(ModItem))
                 {
-                    item.AcquireFileInfo();
                     ModItem = item;
+                    if (ModItem.ModInfo.Body != null)
+                        aggregator.GetEvent<SetModrinthModBodyEvent>().Publish(ModItem.ModInfo.Body);
                 }
+
             }
 
         }

@@ -26,7 +26,7 @@ namespace ModManager.ViewModels
             LoadDataCommand = new DelegateCommand<string>(LoadData);
             this.aggregator = aggregator;
             this.regionManager = regionManager;
-            GetMcAndLoaderVersion(null);
+            //GetMcAndLoaderVersion(null);
         }
 
         public DelegateCommand<object?> GetMcAndLoaderCommand { get; private set; }

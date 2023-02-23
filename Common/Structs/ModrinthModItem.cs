@@ -1,4 +1,5 @@
-﻿using ModManager.Utils;
+﻿using ModManager.Extension;
+using ModManager.Utils;
 using ModManager.Utils.APIs;
 using Newtonsoft.Json.Linq;
 using Prism.Mvvm;
@@ -34,9 +35,15 @@ namespace ModManager.Common.Structs
         /// <summary>
         /// 要求文件信息
         /// </summary>
-        public void AcquireFileInfo()
+        public void AcquireDetailedInfo()
         {
-            FileInfos = ModrinthAPI.API().GetModVersions(ModInfo.ID);
+            var fileinfos = ModrinthAPI.API().GetModVersions(ModInfo.ID);
+            if (fileinfos != null)
+                FileInfos = fileinfos;//要求文件信息
+
+            var info = ModrinthAPI.API().GetModBodyFromID(ModInfo.ID);
+            if (info != null)
+                ModInfo.Body = info;//要求详细信息
         }
     }
     public class ModrinthModInfo : BindableBase
@@ -85,6 +92,9 @@ namespace ModManager.Common.Structs
                     info.ServerSide = "不支持";
                     break;
             }
+            info.Categorys = new();
+            foreach (var item in jToken["categories"])
+                info.Categorys.Add(new ModrinthCategory() { Name = item.Value<string>() });
             return info;
         }
 
@@ -236,6 +246,27 @@ namespace ModManager.Common.Structs
             set { clientside = value; }
         }
 
+        private List<ModrinthCategory> categorys;
+        /// <summary>
+        /// 标签
+        /// </summary>
+        public List<ModrinthCategory> Categorys
+        {
+            get { return categorys; }
+            set { categorys = value; }
+        }
+
+        private string? body;
+        /// <summary>
+        /// 详细信息 Markdown格式
+        /// </summary>
+        public string? Body
+        {
+            get { return body; }
+            set { body = value; }
+        }
+
+
 
     }
     public class ModrinthModFileInfo
@@ -254,7 +285,10 @@ namespace ModManager.Common.Structs
                 FileID = jToken["id"].Value<string>(),
                 FileName = jToken["files"][0]["filename"].Value<string>(),
                 Name = jToken["name"].Value<string>(),
-                VersionType = jToken["version_type"].Value<string>()
+                VersionType = jToken["version_type"].Value<string>(),
+                VersionNumber = jToken["version_number"].Value<string>(),
+                GameVersions = jToken["game_versions"].Values<string>().ToList(),
+                Loaders = jToken["loaders"].Values<string>().ToList()
             };
             return info;
         }
@@ -317,6 +351,87 @@ namespace ModManager.Common.Structs
         {
             get { return filename; }
             set { filename = value; }
+        }
+
+        private List<string?>? loaders;
+        /// <summary>
+        /// 加载器
+        /// </summary>
+        public List<string?>? Loaders
+        {
+            get { return loaders; }
+            set { loaders = value; }
+        }
+
+        private List<string?>? gameversions;
+        /// <summary>
+        /// 支持的游戏版本
+        /// </summary>
+        public List<string?>? GameVersions
+        {
+            get { return gameversions; }
+            set { gameversions = value; }
+        }
+
+        private string? versionnumber;
+        /// <summary>
+        /// 版本号
+        /// </summary>
+        public string? VersionNumber
+        {
+            get { return versionnumber; }
+            set { versionnumber = value; }
+        }
+
+        /// <summary>
+        /// 用于绑定的Loader字符串
+        /// </summary>
+        public string Loader
+        {
+            get
+            {
+                if (Loaders == null || Loaders.Count == 0)
+                    return string.Empty;
+                else if (Loaders.Count == 1)
+                    return Loaders.FirstOrDefault();
+                return string.Join(",", Loaders);
+            }
+        }
+
+        /// <summary>
+        /// 用于绑定的Gameversion字符串
+        /// </summary>
+        public string GameVersion
+        {
+            get
+            {
+                if (GameVersions == null || GameVersions.Count == 0)
+                    return string.Empty;
+                else if (GameVersions.Count == 1)
+                    return GameVersions.FirstOrDefault();
+                else
+                    return $"{GameVersions.FirstOrDefault()}-{GameVersions.Last()}";
+            }
+        }
+
+
+    }
+    public class ModrinthCategory
+    {
+        private string name;
+
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        public string Icon
+        {
+            get
+            {
+                return $"/Assets/{Name}.png";
+            }
         }
 
     }

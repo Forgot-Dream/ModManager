@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace ModManager.Common.Structs
 {
@@ -207,10 +206,7 @@ namespace ModManager.Common.Structs
         {
             get
             {
-                var ret = "";
-                foreach (var author in Authors)
-                    ret += " " + author;
-                return ret;
+                return string.Join(" , ", Authors);
             }
         }
 

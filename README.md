@@ -12,6 +12,8 @@
 | Newtonsoft.Json | MIT |
 | Prism.DryIoc | MIT |
 | Prism.Wpf | MIT |
+|Microsoft.Web.WebView2|[Custom License](https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.1587.40/license)|
+|Markdig|BSD-2-Clause|
 
 
 ## 开源许可证

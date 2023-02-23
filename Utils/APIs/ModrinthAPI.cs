@@ -1,4 +1,5 @@
-﻿using ModManager.Common.Structs;
+﻿using Markdig;
+using ModManager.Common.Structs;
 using ModManager.Extension;
 using Newtonsoft.Json.Linq;
 using System;
@@ -66,7 +67,20 @@ namespace ModManager.Utils.APIs
                 }
                 return null;
             });
-            
+
+        }
+
+        /// <summary>
+        /// 通过Modrinth的ModID请求详细的Mod信息
+        /// </summary>
+        /// <param name="id">Modrinth Mod ID</param>
+        /// <returns>Body html</returns>
+        public string? GetModBodyFromID(string id)
+        {
+            var reply = APIGet($"/v2/project/{id}", null);
+            if (reply == null)
+                return null;
+            return Markdown.ToHtml(reply["body"].Value<string?>());
         }
 
         /// <summary>
@@ -75,14 +89,14 @@ namespace ModManager.Utils.APIs
         /// <returns>MC版本号的列表</returns>
         public List<MinecraftGameVersion>? GetMinecraftVersionList()
         {
-
             var reply = APIGet("/v2/tag/game_version", null);
             if (reply == null)
                 return null;
             List<MinecraftGameVersion> retlist = new();
             foreach (var version in reply)
-                retlist.Add(new MinecraftGameVersion() { date = DateTime.Parse(version["date"].Value<string>()),version = version["version"].Value<string?>(),version_type = version["version_type"].Value<string?>(),major = version["major"].Value<bool>() });
+                retlist.Add(new MinecraftGameVersion() { date = DateTime.Parse(version["date"].Value<string>()), version = version["version"].Value<string?>(), version_type = version["version_type"].Value<string?>(), major = version["major"].Value<bool>() });
             return retlist;
+
         }
 
         /// <summary>
