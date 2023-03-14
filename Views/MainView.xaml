@@ -52,7 +52,9 @@
                             <Button
                                 Margin="0"
                                 materialDesign:ButtonAssist.CornerRadius="8"
-                                Style="{StaticResource MaterialDesignOutlinedDarkButton}">
+                                Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                Command="{Binding ChangeViewCommand}"
+                                CommandParameter="ImportView">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon
@@ -142,6 +144,8 @@
                             <Button
                                 Margin="0,4,0,4"
                                 materialDesign:ButtonAssist.CornerRadius="8"
+                                Command="{Binding ChangeViewCommand}"
+                                CommandParameter="SettingsView"
                                 Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">

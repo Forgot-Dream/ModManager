@@ -31,6 +31,7 @@ namespace ModManager
             containerRegistry.RegisterForNavigation<AddCurseforgeModView, AddCurseforgeModViewModel>();
             containerRegistry.RegisterForNavigation<AddGithubModView, AddGithubModViewModel>();
             containerRegistry.RegisterForNavigation<AddLocalFileView, AddLocalFileViewModel>();
+            containerRegistry.RegisterForNavigation<AddLocalFolderView, AddLocalFolderViewModel>();
             containerRegistry.RegisterForNavigation<MessageView, MessageViewModel>();
             containerRegistry.RegisterForNavigation<ProjectView, ProjectViewModel>();
 
