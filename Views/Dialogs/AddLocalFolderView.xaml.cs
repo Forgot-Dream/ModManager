@@ -22,7 +22,6 @@ namespace ModManager.Views.Dialogs
     {
         public AddLocalFolderView()
         {
-            Debug.WriteLine("AddLocalFolderView");
             InitializeComponent();
         }
     }

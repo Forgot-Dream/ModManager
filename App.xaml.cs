@@ -6,6 +6,8 @@ using ModManager.Views.Dialogs;
 using ModManager.Views.SearchView;
 using Prism.DryIoc;
 using Prism.Ioc;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 namespace ModManager
@@ -53,6 +55,18 @@ namespace ModManager
             IConfigureService? service = Current.MainWindow.DataContext as IConfigureService;
             service?.Configure();
             base.OnInitialized();
+        }
+        protected override void OnExit(ExitEventArgs e)//关闭时删除cache缓存(如果在搜索界面会删不掉，下次打开再说/)
+        {
+            string appDirectory = Directory.GetCurrentDirectory();
+            string folderPath = Path.Combine(appDirectory, "caches");
+            base.OnExit(e);
+            // 删除指定文件夹
+            if (Directory.Exists(folderPath))
+            {
+                Directory.Delete(folderPath, true);
+            }
+
         }
     }
 }
