@@ -5,6 +5,7 @@
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ModManager.Views"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="[prism ]http://prismlibrary.com/"
@@ -105,36 +106,109 @@
                 </Grid>
             </Grid>
         </materialDesign:Card>
-        <materialDesign:Card
-            Grid.Row="2"
-            Margin="4,0,4,4"
-            Padding="0,8,4,8">
-            <TreeView
-                Grid.Row="2"
-                materialDesign:TreeViewAssist.ShowSelection="False"
-                ItemsSource="{Binding ModItem.FileInfos}">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type structs:Version2FileInfo}" ItemsSource="{Binding FileInfos}">
-                        <TextBlock Margin="3,2" Text="{Binding GameVersion}" />
-                    </HierarchicalDataTemplate>
-                    <DataTemplate DataType="{x:Type structs:CurseforgeModFileInfo}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="100" />
-                            </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" />
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding DisplayName}" />
-                                <TextBlock Text="{Binding FileDate, StringFormat=最近更新时间 {0:yyyy-MM-dd HH:mm:ss}}" />
-                                <TextBlock Text="{Binding GameVersion}" />
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </TreeView.Resources>
-            </TreeView>
-        </materialDesign:Card>
+        <DockPanel Grid.Row="2" LastChildFill="True">
+            <materialDesign:Card
+                Width="500"
+                Margin="4,0,4,4"
+                Padding="4">
+                <ItemsControl Grid.Column="0" ItemsSource="{Binding ModItem.FileInfos}">
+                    <ItemsControl.Template>
+                        <ControlTemplate TargetType="ItemsControl">
+                            <ScrollViewer Style="{StaticResource MaterialDesignScrollViewer}">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                    <ItemsControl.Resources>
+
+                        <DataTemplate DataType="{x:Type structs:CurseforgeModFileInfo}">
+                            <Grid Margin="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="460" />
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    Grid.Column="0"
+                                    Background="#FF969696"
+                                    CornerRadius="5" />
+                                <Border
+                                    Grid.Column="1"
+                                    Margin="4,0,4,0"
+                                    BorderBrush="#FF969696"
+                                    BorderThickness="1"
+                                    CornerRadius="5" />
+                                <StackPanel Grid.Column="1" Margin="8,4,8,4">
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="DemiBold"
+                                        Text="{Binding DisplayName}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontSize="14" Text="{Binding GameVersion}" />
+                                        <TextBlock
+                                            Margin="4,0,0,0"
+                                            FontSize="14"
+                                            Text="{Binding GameVersion}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Margin="0,0,4,0"
+                                            FontWeight="DemiBold"
+                                            Text="{Binding GameVersion}" />
+                                        <TextBlock Text="{Binding ReleaseType}" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Margin="8,4,8,4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        Width="35"
+                                        Height="35"
+                                        Margin="4"
+                                        Padding="0"
+                                        materialDesign:ButtonAssist.CornerRadius="5"
+                                        materialDesign:ElevationAssist.Elevation="Dp0"
+                                        Style="{StaticResource MaterialDesignPaperLightButton}"
+                                        ToolTip="直接下载">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon
+                                                Width="25"
+                                                Height="25"
+                                                Kind="Download" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button
+                                        Width="35"
+                                        Height="35"
+                                        Margin="4"
+                                        Padding="0"
+                                        materialDesign:ButtonAssist.CornerRadius="5"
+                                        materialDesign:ElevationAssist.Elevation="Dp0"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        ToolTip="添加到当前打开的项目">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon
+                                                Width="25"
+                                                Height="25"
+                                                Kind="Add" />
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                </ItemsControl>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="0,0,4,4" >
+                <Grid>
+                    <wv2:WebView2 x:Name="webview"  />
+
+
+                </Grid>
+            </materialDesign:Card>
+        </DockPanel>
 
     </Grid>
 </UserControl>

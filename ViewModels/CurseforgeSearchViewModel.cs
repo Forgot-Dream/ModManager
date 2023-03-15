@@ -16,12 +16,14 @@ namespace ModManager.ViewModels
         private readonly CurseforgeAPI Api;
         private readonly IEventAggregator aggregator;
         private readonly IRegionManager regionManager;
+        private int lastcalledindex = -1;
         private string searchfilter;
         private MinecraftGameVersion? gameversion;
         private int classid;
         private int sortfield = -1;
         private List<CurseforgeModItem> moditems;
         private List<MinecraftGameVersion> gameversions;
+
 
         /// <summary>
         /// 搜索的字符串
@@ -80,15 +82,22 @@ namespace ModManager.ViewModels
         }
         void Reset(object? obj) { searchFilter = ""; GameVersion = null; classId = 0; sortField = -1; }
 
-        void ViewDetails(object index)
+        async void ViewDetails(object index)
         {
-            if ((int)index == -1)
-                return;
-            var param = new NavigationParameters
+            if (lastcalledindex != (int)index)
+            {
+                aggregator.ShowProgressBar(true);
+                await Task.Run(() => { ModItems[(int)index].AcquireDetailedInfo(); });
+                aggregator.ShowProgressBar(false);
+                var param = new NavigationParameters
             {
                 { "ModItem", ModItems[(int)index] }
             };
-            regionManager.RequestNavigate("MainViewRegion", "CurseforgeModView", param);
+                regionManager.RequestNavigate("MainViewRegion", "CurseforgeModView", param);
+                lastcalledindex = (int)index;
+                return;
+            }
+            regionManager.Regions["MainViewRegion"].RequestNavigate("CurseforgeSearchView");
         }
     }
 }

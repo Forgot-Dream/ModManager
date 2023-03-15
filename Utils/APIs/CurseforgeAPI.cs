@@ -118,6 +118,18 @@ namespace ModManager.Utils.APIs
             }
             return retlist;
         }
+
+        /// <summary>
+        /// 获取Mod的html描述
+        /// </summary>
+        /// <param name="ModID">ModID</param>
+        /// <returns>此Mod的html描述页面</returns>
+        public string? GetModDescription(int ModID)
+        {
+            var reply = APIGet($"/v1/mods/{ModID}/description",null);
+            return reply["data"].Value<string?>();
+        }
+
         /// <summary>
         /// 向Curseforge API发送带参数的Get请求
         /// </summary>

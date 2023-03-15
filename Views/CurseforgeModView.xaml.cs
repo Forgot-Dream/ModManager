@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Microsoft.Web.WebView2.Core;
+using ModManager.Common.Events;
+using Prism.Events;
+using System.Diagnostics;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ModManager.Views
 {
@@ -20,9 +11,24 @@ namespace ModManager.Views
     /// </summary>
     public partial class CurseforgeModView : UserControl
     {
-        public CurseforgeModView()
+        public CurseforgeModView(IEventAggregator aggregator)
         {
             InitializeComponent();
+            aggregator.GetEvent<SetCurseforgeModBodyEvent>().Subscribe(async (html) =>
+            {
+                await webview.EnsureCoreWebView2Async();
+                webview.CoreWebView2.NavigateToString(html);
+            });
+            webview.NavigationStarting += ToLocalView;
+        }
+
+        private void ToLocalView(object? sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            if (e.Uri.StartsWith("http") || e.Uri.StartsWith("linkout"))
+            {
+                System.Diagnostics.Process.Start(new ProcessStartInfo { UseShellExecute = true, FileName = e.Uri });
+                e.Cancel = true;
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ namespace ModManager.Utils
         public static Regex Curseforge_Regex = new Regex(@"https://www.curseforge.com/minecraft/mc-mods/[-\w]*");
         public static Regex Name_Regex = new Regex(@"\[.*\]");
 
+        [Obsolete("已被废弃")]
         public static async Task<ObservableCollection<ModItem>> GetDataFromAPI(ObservableCollection<ModItem> sourceItems, string MCVer)
         {
             return await Task.Run(() =>
@@ -53,6 +54,7 @@ namespace ModManager.Utils
             });
         }
 
+        [Obsolete("已被废弃")]
         public static ModItem? ParseModJson(JObject ModJson, FileInfo file)
         {
             ModItem si;
@@ -77,6 +79,8 @@ namespace ModManager.Utils
                 }
             }
         }
+
+        [Obsolete("已被废弃")]
         public static ModItem? ParseFileLine(string Content)
         {
             var name_match = Name_Regex.Match(Content);
@@ -103,6 +107,7 @@ namespace ModManager.Utils
             return null;
         }
 
+        [Obsolete("已被废弃")]
         public static ModItem? ParseCurseforgeResponse(JToken content,string MCVer)
         {
             ModItem sourceitem = new();

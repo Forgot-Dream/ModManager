@@ -1,5 +1,4 @@
-﻿using ModManager.Extension;
-using ModManager.Utils;
+﻿using ModManager.Utils;
 using ModManager.Utils.APIs;
 using Newtonsoft.Json.Linq;
 using Prism.Mvvm;

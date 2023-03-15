@@ -20,7 +20,7 @@
         <materialDesign:Card
             Margin="10"
             Padding="0"
-            materialDesign:ShadowAssist.ShadowDepth="Depth2"
+            materialDesign:ElevationAssist.Elevation="Dp2"
             Background="#DCE2F1"
             Foreground="{DynamicResource MaterialDesignDarkBackground}">
             <Grid>

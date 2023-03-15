@@ -2,7 +2,7 @@
 
 namespace ModManager.Common.Events
 {
-    class SetModrinthModBodyEvent:PubSubEvent<string>
+    internal class SetCurseforgeModBodyEvent:PubSubEvent<string>
     {
     }
 }

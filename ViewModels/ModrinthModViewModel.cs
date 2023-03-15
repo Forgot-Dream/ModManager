@@ -1,11 +1,9 @@
 ﻿using ModManager.Common.Events;
 using ModManager.Common.Structs;
-using ModManager.Extension;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-using System.Threading.Tasks;
 
 namespace ModManager.ViewModels
 {

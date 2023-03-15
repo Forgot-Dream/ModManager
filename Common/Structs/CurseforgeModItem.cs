@@ -6,7 +6,6 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace ModManager.Common.Structs
 {
@@ -32,11 +31,11 @@ namespace ModManager.Common.Structs
             private set { modInfo = value; }
         }
 
-        private List<Version2FileInfo> fileInfos = new();
+        private List<CurseforgeModFileInfo> fileInfos = new();
         /// <summary>
         /// Curseforge Mod的文件列表
         /// </summary>
-        public List<Version2FileInfo> FileInfos
+        public List<CurseforgeModFileInfo> FileInfos
         {
             get { return fileInfos; }
             private set { fileInfos = value; RaisePropertyChanged(); }
@@ -117,30 +116,17 @@ namespace ModManager.Common.Structs
             return item;
         }
         /// <summary>
-        /// 要求文件信息
+        /// 要求详细信息
         /// </summary>
-        public void AcquireFileInfo()
+        public void AcquireDetailedInfo()
         {
-            if (FileInfos.Count > 0)
-                return;
-            var infos = CurseforgeAPI.API().GetModFileInfos(ModInfo.ID);
-            var orderedlist =
-                from fileinfo in infos
-                group fileinfo by fileinfo.GameVersion into newList
-                orderby newList.Key descending
-                select newList;
-            foreach(var item in orderedlist)
-            {
-                var v2f = new Version2FileInfo()
-                {
-                    GameVersion = item.Key
-                };
-                foreach(var fileinfo in item)
-                {
-                    v2f.FileInfos.Add(fileinfo);
-                }
-                FileInfos.Add(v2f);
-            }
+            var fileinfos = CurseforgeAPI.API().GetModFileInfos(ModInfo.ID);
+            if (fileinfos != null)
+                FileInfos = fileinfos;//要求文件信息
+
+            var info = CurseforgeAPI.API().GetModDescription(ModInfo.ID);
+            if (info != null)
+                ModInfo.HtmlDescription = info;//要求详细信息
         }
     }
     public class CurseforgeModInfo : BindableBase
@@ -315,6 +301,15 @@ namespace ModManager.Common.Structs
             set { datemodified = value; }
         }
 
+        private string htmldescription;
+        /// <summary>
+        /// Mod的html描述
+        /// </summary>
+        public string HtmlDescription
+        {
+            get { return htmldescription; }
+            set { htmldescription = value; }
+        }
 
     }
     public class CurseforgeModFileInfo
@@ -331,7 +326,7 @@ namespace ModManager.Common.Structs
                 DownloadURL = jToken["downloadUrl"].Value<string?>(),
                 FileDate = DateTime.Parse(jToken["fileDate"].Value<string?>())
             };
-            foreach(var item in jToken["sortableGameVersions"])// I don't know why CF put game version and loader type together.
+            foreach (var item in jToken["sortableGameVersions"])// I don't know why CF put game version and loader type together.
             {
                 if (!item["gameVersion"].IsNullOrEmpty())
                 {
@@ -423,13 +418,18 @@ namespace ModManager.Common.Structs
         }
 
     }
-    public class Version2FileInfo
+
+    public class CurseforgeCategory
     {
-        public Version2FileInfo()
-        {
-            FileInfos = new();
-        }
-        public string? GameVersion { get; set; }
-        public List<CurseforgeModFileInfo> FileInfos { get; set; }
+        public int id { get; set; }
+        public int gameId { get; set; }
+        public string name { get; set; }
+        public string slug { get; set; }
+        public string url { get; set; }
+        public string iconUrl { get; set; }
+        public DateTime dateModified { get; set; }
+        public int classId { get; set; }
+        public int parentCategoryId { get; set; }
+        public int displayIndex { get; set; }
     }
 }

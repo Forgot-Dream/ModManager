@@ -57,14 +57,14 @@ namespace ModManager.ViewModels
             set { projects = value; RaisePropertyChanged(); }
         }
 
-        void CreateMenu()
+        void CreateProjectList()
         {
             Projects.Add(new ProjectItem() { Name = "TEST",LoaderType="fabric" });
         }
 
         public void Configure()
         {
-            CreateMenu();
+            CreateProjectList();
             regionManager.Regions["MainViewRegion"].RequestNavigate("ImportView");
         }
     }
