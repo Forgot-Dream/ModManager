@@ -169,6 +169,20 @@
                     <Button
                         Margin="5,5,5,5"
                         Command="{Binding AddCommand}"
+                        CommandParameter="AddLocalFolder"
+                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                        ToolTip="导入本地文件夹">
+                        <Button.Content>
+                            <materialDesign:PackIcon
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Center"
+                                Kind="Folder" />
+                        </Button.Content>
+                    </Button>
+                    <Button
+                        Margin="5,5,5,5"
+                        Command="{Binding AddCommand}"
                         CommandParameter="AddLocalFile"
                         Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                         ToolTip="导入本地文件">
@@ -177,7 +191,7 @@
                                 Width="25"
                                 Height="25"
                                 HorizontalAlignment="Center"
-                                Kind="Folder" />
+                                Kind="File" />
                         </Button.Content>
                     </Button>
                 </StackPanel>

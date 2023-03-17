@@ -11,7 +11,10 @@
         {
             if (filename == null)
                 return string.Empty;
-            return $"{filename}({gameVersion})";
+            if(gameVersion == null) {
+                return $"{filename}";
+            }
+            return $"{filename}({gameVersion})";//这里原来这样写如果导入本地文件version后面会有 "()"
         }
 
     }

@@ -130,6 +130,7 @@ namespace ModManager.ViewModels
                 case "AddCurseforgeMod": dialogHostService.ShowDialog("AddCurseforgeModView", null); break;
                 case "AddGithubMod": dialogHostService.ShowDialog("AddGithubModView", null); break;
                 case "AddLocalFile": dialogHostService.ShowDialog("AddLocalFileView", null); break;
+                case "AddLocalFolder": dialogHostService.ShowDialog("AddLocalFolderView", null); break;
             }
         }
 
