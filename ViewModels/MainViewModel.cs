@@ -24,6 +24,7 @@ namespace ModManager.ViewModels
             this.dialogHostService = dialogHostService;
             NavigateCommand = new DelegateCommand<ProjectItem>(Navigate);
             ChangeViewCommand = new DelegateCommand<string>(ChangeView);
+            AddProjectCommand = new DelegateCommand(AddProject);
             aggregator.GetEvent<MessageEvent>().Subscribe(MessageDialogOpen);
         }
 
@@ -40,6 +41,7 @@ namespace ModManager.ViewModels
         public DelegateCommand<ProjectItem> NavigateCommand { get; private set; }
         public DelegateCommand<string> ChangeViewCommand { get; private set; }
 
+        public DelegateCommand AddProjectCommand { get; private set; }
         private void ChangeView(string obj)
         {
             if (string.IsNullOrEmpty(obj))
@@ -57,14 +59,16 @@ namespace ModManager.ViewModels
             set { projects = value; RaisePropertyChanged(); }
         }
 
-        void CreateProjectList()
+        public async void AddProject()
         {
-            Projects.Add(new ProjectItem() { Name = "TEST",LoaderType="fabric" });
+            var result = await dialogHostService.ShowDialog("AddProjectView", null);
+            if (result.Result == ButtonResult.OK && result.Parameters.ContainsKey("ProjectItem"))
+            {
+                Projects.Add(result.Parameters.GetValue<ProjectItem>("ProjectItem"));
+            }
         }
-
         public void Configure()
         {
-            CreateProjectList();
             regionManager.Regions["MainViewRegion"].RequestNavigate("ImportView");
         }
     }

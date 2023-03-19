@@ -28,7 +28,6 @@ namespace ModManager.ViewModels
 					FolderPath = "testpath",
 					MCVersion = "1.19.2",
 					LoaderType = "fabric",
-					LoaderVersion = "0.0.1",
 					ModItems = null
 				},
                 new ProjectItem()
@@ -37,7 +36,6 @@ namespace ModManager.ViewModels
                     FolderPath = "testpath",
                     MCVersion = "1.19.2",
                     LoaderType = "fabric",
-                    LoaderVersion = "0.0.1",
                     ModItems = null
                 }
             };

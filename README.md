@@ -1,5 +1,7 @@
 ﻿# ModManager
 
+*NOTE:This Project is still work in progress.*
+
 这是一个Mod管理器，使用C#开发，基于.NET Core 6。
 
 更多功能有待开发。
@@ -19,4 +21,4 @@
 ## 开源许可证
 GNU General Public License v3.0
 
-Copyright © 2023 Forgot-Dream
+Copyright © 2023 Forgot-Dream And Other Contributors

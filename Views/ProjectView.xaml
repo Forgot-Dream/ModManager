@@ -6,31 +6,153 @@
     xmlns:local="clr-namespace:ModManager.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewmodels="clr-namespace:ModManager.ViewModels"
     xmlns:structs="clr-namespace:ModManager.Common.Structs"
+    xmlns:viewmodels="clr-namespace:ModManager.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:ProjectViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
     mc:Ignorable="d">
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="700"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="700" />
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="650"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBox Grid.Row="0" FontSize="12" materialDesign:HintAssist.Hint="搜索..." Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
-            <ListBox Margin="0,4,0,4" Grid.Row="1">
+            <TextBox
+                Grid.Row="0"
+                materialDesign:HintAssist.Hint="搜索..."
+                FontSize="12"
+                Style="{StaticResource MaterialDesignOutlinedTextBox}" />
+            <ListBox Grid.Row="1" Margin="0,4,0,4">
                 <ListBoxItem>test</ListBoxItem>
             </ListBox>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Button Content="导入"/>
-                <Button Content="导出"/>
-            </StackPanel>
         </Grid>
+        <StackPanel
+            Grid.Column="1"
+            Margin="4"
+            Orientation="Vertical">
+            <materialDesign:Card Padding="4" materialDesign:ElevationAssist.Elevation="Dp2">
+                <StackPanel Orientation="Vertical">
+                    <materialDesign:PackIcon
+                        Width="32"
+                        Height="32"
+                        Margin="5,5,5,5"
+                        HorizontalAlignment="Center"
+                        Kind="FilePlus">
+                        <materialDesign:PackIcon.Foreground>
+                            <SolidColorBrush Color="{DynamicResource MaterialDesignShadow}" />
+                        </materialDesign:PackIcon.Foreground>
+                    </materialDesign:PackIcon>
+                    <Separator Margin="8,0,8,0" Style="{StaticResource MaterialDesignDarkSeparator}">
+                        <Separator.Foreground>
+                            <SolidColorBrush Color="{StaticResource MaterialDesignShadow}" />
+                        </Separator.Foreground>
+                    </Separator>
+                    <Button
+                        Margin="0,5"
+                        Padding="-10"
+                        Command="{Binding AddCommand}"
+                        CommandParameter="AddCurseforgeMod"
+                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                        ToolTip="导入CurseforgeMod">
+                        <Button.Content>
+                            <materialDesign:PackIcon
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Center"
+                                Kind="Anvil" />
+                        </Button.Content>
+                    </Button>
+                    <Button
+                        Margin="0,5"
+                        Padding="-10"
+                        Command="{Binding AddCommand}"
+                        CommandParameter="AddGithubMod"
+                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                        ToolTip="导入Github Mod">
+                        <Button.Content>
+                            <materialDesign:PackIcon
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Center"
+                                Kind="Github" />
+                        </Button.Content>
+                    </Button>
+                    <Button
+                        Margin="0,5"
+                        Padding="-10"
+                        Command="{Binding AddCommand}"
+                        CommandParameter="AddLocalFolder"
+                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                        ToolTip="导入本地文件夹">
+                        <Button.Content>
+                            <materialDesign:PackIcon
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Center"
+                                Kind="Folder" />
+                        </Button.Content>
+                    </Button>
+                    <Button
+                        Margin="0,5"
+                        Padding="-10"
+                        Command="{Binding AddCommand}"
+                        CommandParameter="AddLocalFile"
+                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                        ToolTip="导入本地文件">
+                        <Button.Content>
+                            <materialDesign:PackIcon
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Center"
+                                Kind="File" />
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card
+                Margin="0,5,0,0"
+                Padding="4"
+                materialDesign:ElevationAssist.Elevation="Dp2"
+                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                <StackPanel Orientation="Vertical">
+                    <materialDesign:PackIcon
+                        Width="32"
+                        Height="32"
+                        Margin="5,5,5,5"
+                        HorizontalAlignment="Center"
+                        Kind="FileRefreshOutline">
+                        <materialDesign:PackIcon.Foreground>
+                            <SolidColorBrush Color="{DynamicResource MaterialDesignShadow}" />
+                        </materialDesign:PackIcon.Foreground>
+                    </materialDesign:PackIcon>
+                    <Separator Margin="8,0,8,0" Style="{StaticResource MaterialDesignDarkSeparator}">
+                        <Separator.Foreground>
+                            <SolidColorBrush Color="{DynamicResource MaterialDesignShadow}" />
+                        </Separator.Foreground>
+                    </Separator>
+                    <Button
+                        Margin="2,5"
+                        Padding="-10"
+                        Command="{Binding RefreshCommand}"
+                        CommandParameter="All"
+                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                        ToolTip="检查更新">
+                        <Button.Content>
+                            <materialDesign:PackIcon
+                                Width="25"
+                                Height="25"
+                                HorizontalAlignment="Center"
+                                Kind="Refresh" />
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </materialDesign:Card>
+        </StackPanel>
     </Grid>
 </UserControl>

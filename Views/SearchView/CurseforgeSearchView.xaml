@@ -126,6 +126,10 @@
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="SelectionChanged">
                         <behaviors:InvokeCommandAction Command="{Binding ViewDetailsCommand}" CommandParameter="{Binding ElementName=CurseforgeModItemList, Path=SelectedIndex}" />
+                        <behaviors:ChangePropertyAction
+                            PropertyName="SelectedIndex"
+                            TargetObject="{Binding ElementName=CurseforgeModItemList}"
+                            Value="-1" />
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
                 <ListBox.Resources>

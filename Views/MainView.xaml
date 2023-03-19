@@ -194,6 +194,7 @@
                                     Height="25"
                                     Padding="0"
                                     materialDesign:ButtonAssist.CornerRadius="8"
+                                    Command="{Binding AddProjectCommand}"
                                     Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                     <Button.Content>
                                         <materialDesign:PackIcon

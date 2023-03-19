@@ -6,6 +6,7 @@ using ModManager.Views.Dialogs;
 using ModManager.Views.SearchView;
 using Prism.DryIoc;
 using Prism.Ioc;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -30,16 +31,20 @@ namespace ModManager
             containerRegistry.RegisterForNavigation<ImportView, ImportViewModel>();
             containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
             containerRegistry.RegisterForNavigation<ExportView, ExportViewModel>();
+
+            //弹窗类注册
             containerRegistry.RegisterForNavigation<AddCurseforgeModView, AddCurseforgeModViewModel>();
             containerRegistry.RegisterForNavigation<AddGithubModView, AddGithubModViewModel>();
             containerRegistry.RegisterForNavigation<AddLocalFileView, AddLocalFileViewModel>();
             containerRegistry.RegisterForNavigation<AddLocalFolderView, AddLocalFolderViewModel>();
             containerRegistry.RegisterForNavigation<MessageView, MessageViewModel>();
+            containerRegistry.RegisterForNavigation<AddProjectView, AddProjectViewModel>();
+
             containerRegistry.RegisterForNavigation<ProjectView, ProjectViewModel>();
 
             //Curseforge界面注册
             containerRegistry.RegisterForNavigation<CurseforgeSearchView, CurseforgeSearchViewModel>();
-            containerRegistry.RegisterForNavigation<CurseforgeModView,CurseforgeModViewModel>();
+            containerRegistry.RegisterForNavigation<CurseforgeModView, CurseforgeModViewModel>();
 
             //Modrinth界面注册
             containerRegistry.RegisterForNavigation<ModrinthSearchView, ModrinthSearchViewModel>();
@@ -66,7 +71,15 @@ namespace ModManager
             // 删除指定文件夹
             if (Directory.Exists(folderPath))
             {
-                Directory.Delete(folderPath, true);
+                try
+                {
+                    Directory.Delete(folderPath, true);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+
             }
 
         }

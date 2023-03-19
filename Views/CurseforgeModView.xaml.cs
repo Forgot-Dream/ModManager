@@ -26,7 +26,8 @@ namespace ModManager.Views
         {
             if (e.Uri.StartsWith("http") || e.Uri.StartsWith("linkout"))
             {
-                System.Diagnostics.Process.Start(new ProcessStartInfo { UseShellExecute = true, FileName = e.Uri });
+                Debug.WriteLine($"Open Page on Local: {e.Uri}");
+                Process.Start(new ProcessStartInfo { UseShellExecute = true, FileName = e.Uri });
                 e.Cancel = true;
             }
         }
